@@ -1,0 +1,14 @@
+{
+    "name": "Lama Web",
+    "version": "0.0.0",
+    "authors": [
+	"Enguerrand Decorne <decorne.en@gmail.com>"
+    ],
+    "description": "Web frontend for LamaUrbain",
+    "license": "Apache2",
+    "dependencies": {
+	"less": "~2.0.0",
+	"bootstrap": "~3.3.1",
+	"fontawesome": "~4.3.0"
+    }
+}
