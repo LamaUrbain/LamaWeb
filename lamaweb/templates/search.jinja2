@@ -1,0 +1,22 @@
+{% extends 'base.jinja2' %}
+{% block js %}
+<script src="/static/js/search.js"></script>
+{% endblock %}
+{% block content %}
+    <div id="logo">
+      <a href="/">
+	<img src="/static/shadow_small.png" alt="Lama Urbain" class="logo">
+      </a>
+    </div>
+
+    <div id="searchbox">
+      <form method="GET">
+	<input type="text" class="form-control search" placeholder="Departure" name="point1">
+	<input type="text" class="form-control search" placeholder="Arrival" name="point2">
+	<div class="text-right">
+	  <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
+	  <button type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
+	</div>
+      </form>
+    </div>
+{% endblock %}

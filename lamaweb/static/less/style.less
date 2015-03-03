@@ -1,8 +1,213 @@
-@import url(http://fonts.googleapis.com/css?family=Maven+Pro:400,700);
+
+@import "../bower/bootstrap/less/bootstrap.less";
+@import "../bower/fontawesome/css/font-awesome.min.css";
+@import url(http://fonts.googleapis.com/css?family=Varela+Round);
+@import "../flaticon/flaticon.css";
+
 @import "mixins.less";
 @import "variables.less";
 
+[class^="flaticon-"]:before,
+[class*=" flaticon-"]:before,
+[class^="flaticon-"]:after,
+[class*=" flaticon-"]:after {
+    margin-left: 0;
+    font-size: inherit;
+}
+
+.text-main { color: @MainColor }
+.text-secondary { color: @SecondaryColor }
+
+.btn-main { .button-variant(@InvertColor, @MainColor, darken(@MainColor, 10%)) }
+.btn-secondary { .button-variant(@InvertColor, @SecondaryColor, darken(@SecondaryColor, 10%)) }
+
 body {
     background-color: #aaa;
-    font-family: 'Maven Pro', sans-serif;
+    font-family: 'Varela Round', sans-serif;
+    .a-variant(@MainColor);
+}
+
+.a-variant(@MainColor);
+
+#map {
+    width: 100%;
+    height: 1000px;
+}
+
+main {
+    @width: 700px;
+    @height: 350px;
+
+    .layhover();
+    left: 50%;
+    top: 50%;
+    width: @width;
+    height: @height;
+    margin-top: ((@height / 2) * -1) - 50px;
+    margin-left: (@width / 2) * -1;
+    padding: 30px 50px;
+    border-radius: 20px;
+
+    img.logo {
+	margin-top: -40%;
+	width: 100%;
+    }
+
+    h1, h2 {
+	text-align: right;
+    }
+
+    h1 {
+	color: @MainColor;
+	font-size: 4.3em;
+	font-weight: bold;
+	margin-left: -50px;
+	margin-bottom: 0;
+    }
+    h2 {
+	font-size: 1.5em;
+	color: @MainColor;
+	font-weight: normal;
+	margin-top: 10px;
+    }
+
+    input.search {
+	.input(@SecondaryColor, 20px);
+	font-size: 2em;
+	line-height: 1.5em;
+	margin-top: 30px;
+	height: 70px;
+	width: 100%;
+	padding: 30px;
+	display: inline-block;
+    }
+    button.submit {
+	margin-top: -70px - 20px;
+	padding: 0 30px;
+	font-size: 2em;
+	border-radius: 20px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	display: inline-block;
+	height: 70px!important;
+    }
+    
+}
+
+#logo {
+    position: absolute;
+    left: 30px;
+    bottom: 0;
+}
+
+#searchbox {
+    .layhover();
+    width: 400px;
+    top: 30px;
+    right: 30px;
+    padding: 20px;
+
+    input[type=text] {
+	.input(@SecondaryColor, 15px);
+	margin-bottom: 10px;
+    }
+    button.submit {
+	border-radius: 15px;
+    }
+    .btn-link {
+	color: @SecondaryColor;
+	&:hover,
+	&:focus {
+	    color: darken(@SecondaryColor, 10%);
+	}
+    }
+}
+
+#navbar-toggler a.menu, footer {
+    text-shadow: 0px 0px 8px @DarkColor;
+    color: @InvertColor;
+    .a-variant(@InvertColor);
+    a:hover {
+	text-decoration: none;
+    }
+}
+
+#navbar-toggler {
+    position: absolute;
+    @padding: 20px;
+    top: @padding;
+    left: @padding;
+    font-size: 1.5em;
+    a.menu {
+	transition: visibility 0.2s;
+    }
+    nav {
+	overflow: auto;
+	@width: 280px;
+	.layhover();
+	position: absolute;
+	top: @padding * -1;
+	left: (@width + @padding) * -1;
+	width: @width;
+	transition: left 0.2s;
+	h1 {
+	    padding: 0 10px;
+	}
+	ul {
+	    li {
+		padding: 20px;
+		padding-top: 0;
+		a {
+		    padding: 10px;
+		    border-radius: 5px;
+		    border: 1px solid darken(@SecondaryColor, 10%);
+		    color: @InvertColor;
+		    background-color: @SecondaryColor;
+		    .icon {
+			float: right;
+		    }
+		    &:hover,
+		    &:active {
+			background-color: @MainColor;
+			border: 1px solid darken(@MainColor, 10%);
+		    }
+		}
+		&.dropdown-header {
+		    background-color: @MainColor;
+		    color: @InvertColor;
+		    padding: 6px;
+		    margin: 20px;
+		    border-radius: 2px;
+		    &:first {
+			margin-top: 20px;
+		    }
+		}
+	    }
+	}
+    }
+    &:hover {
+	a.menu {
+	    visibility: hidden;
+	}
+	nav {
+	    left: @padding * -1;
+	}
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.2em;
+}
+
+.modal {
+    .team-member {
+	img {
+	    max-width: 50%;
+	    margin: auto;
+	    border: 5px solid @SecondaryColor;
+	}
+    }
 }

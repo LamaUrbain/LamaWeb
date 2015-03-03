@@ -1,10 +1,21 @@
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"0>
+{% extends 'base.jinja2' %}
+{% block content %}
+    <main>
+      <div class="row">
+	<div class="col-xs-5">
+	  <img src="/static/logo_small.png" alt="Lama Urbain" class="logo">
+	</div>
+	<div class="col-xs-7">
+	  <h1>Lama <span class="text-secondary">Urbain</span></h1>
+	  <h2>The most open itinerary app ever</h2>
+	</div>
+      </div>
 
-  <title>Home</title>
-</head>
-<body>
-Hello world
-</body>
-</html>
+      <form method="GET" action="search">
+	<input type="text" class="form-control search" placeholder="Search" name="point1">
+	<div class="text-right">
+	  <button type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i></button>
+	</div>
+      </form>
+    </main>
+{% endblock %}

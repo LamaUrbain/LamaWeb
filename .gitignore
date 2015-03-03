@@ -1,0 +1,8 @@
+*~
+#*#
+*.pyc
+lamaweb/static/bower
+lamaweb/static/css/style.css
+LamaWeb.egg-info
+lamaweb/static/js/ol.js
+env
