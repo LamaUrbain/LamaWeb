@@ -33,7 +33,7 @@ Your Itineraries{% endblock %}
 	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & Edit itinerary" target="_blank" class="btn btn-link">
 	  <i class="flaticon-itinerary"></i>
 	</a>
-	<button type="submit" name="deleteItinerary" class="btn btn-link">
+	<button type="submit" name="deleteItinerary" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Delete this itinerary">
 	  <i class="flaticon-delete"></i>
 	</button>
 	{% set url="/itinerary/" + itinerary.id|string %}

@@ -17,6 +17,7 @@ function modalHandler() {
     $('a[data-toggle=ajaxmodal]').click(function(e) {
 	modal($(this).attr('href').replace('#', ''), $(this).attr('data-size'));
     });
+    $('[data-toggle="tooltip"]').tooltip()
 }
 
 function heightHandler() {

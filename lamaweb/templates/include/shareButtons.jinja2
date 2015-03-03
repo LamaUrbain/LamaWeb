@@ -3,9 +3,9 @@
 {% set btntype = 'link' %}
 {% endif %}
 {% set status = "Check out out this itinerary! "  + url %}
-<a href="https://www.facebook.com/sharer/sharer.php?u={{ url|urlencode }}" class="btn btn-{{ btntype }}">
+<a href="https://www.facebook.com/sharer/sharer.php?u={{ url|urlencode }}" class="btn btn-{{ btntype }}" data-toggle="tooltip" data-placement="top" title="Share on Facebook">
   <i class="flaticon-facebook"></i>
 </a>
-<a href="http://twitter.com/home/?status={{ status|urlencode }}" class="btn btn-{{ btntype }}">
+<a href="http://twitter.com/home/?status={{ status|urlencode }}" class="btn btn-{{ btntype }}" data-toggle="tooltip" data-placement="top" title="Share on Twitter">
   <i class="flaticon-twitter"></i>
 </a>
