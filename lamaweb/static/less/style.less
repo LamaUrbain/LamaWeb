@@ -21,6 +21,14 @@
 .btn-main { .button-variant(@InvertColor, @MainColor, darken(@MainColor, 10%)) }
 .btn-secondary { .button-variant(@InvertColor, @SecondaryColor, darken(@SecondaryColor, 10%)) }
 
+.btn-link {
+    color: @SecondaryColor;
+    &:hover,
+    &:focus {
+	color: darken(@SecondaryColor, 10%);
+    }
+}
+
 body {
     background-color: #aaa;
     font-family: 'Varela Round', sans-serif;
@@ -39,13 +47,7 @@ main {
     @height: 350px;
 
     .layhover();
-    left: 50%;
-    top: 50%;
-    width: @width;
-    height: @height;
-    margin-top: ((@height / 2) * -1) - 50px;
-    margin-left: (@width / 2) * -1;
-    padding: 30px 50px;
+    .centerize(@width, @height);
     border-radius: 20px;
 
     img.logo {
@@ -100,6 +102,11 @@ main {
     bottom: 0;
 }
 
+#error {
+    .layhover();
+    .centerize(400px, 200px);
+}
+
 #searchbox {
     .layhover();
     width: 400px;
@@ -111,14 +118,11 @@ main {
 	.input(@SecondaryColor, 15px);
 	margin-bottom: 10px;
     }
-    button.submit {
+    button, a.btn {
 	border-radius: 15px;
-    }
-    .btn-link {
-	color: @SecondaryColor;
-	&:hover,
-	&:focus {
-	    color: darken(@SecondaryColor, 10%);
+	margin-left: 20px;
+	&[href='#deleteDestination'] {
+	    margin-left: 0;
 	}
     }
 }

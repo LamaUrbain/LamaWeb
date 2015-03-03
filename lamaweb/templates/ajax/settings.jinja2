@@ -1,0 +1,84 @@
+{% extends 'base.jinja2' %}
+{% block title %}
+<i class="flaticon-settings"></i>
+Your Settings{% endblock %}
+{% block body %}
+<form class="form-horizontal" action="/ajax/form/settings" method="POST">
+  <div class="form-group">
+    <label for="inputEmail" class="col-sm-4 control-label">Change your email</label>
+    <div class="col-sm-8">
+      <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword" class="col-sm-4 control-label">Change your password</label>
+    <div class="col-sm-8">
+      <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="inputWalk">
+	  <i class="flaticon-walk"></i>
+	  You can walk
+	</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="inputBicycle">
+	  <i class="flaticon-bicycle"></i>
+	  You can bicycle
+	</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="inputCar">
+	  <i class="flaticon-bus"></i>
+	  You can drive a car
+	</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="inputBus">
+	  <i class="flaticon-tram"></i>
+	  You can take public transportations <small class="text-muted">(RATP)</small>
+	</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-8">
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="inputTrain">
+	  <i class="flaticon-subway"></i>
+	  You can take the train <small class="text-muted">(SNCF)</small>
+	</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group text-right">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-main">Save your settings</button>
+      <br><br>
+      <small class="text-muted saved-message" style="display: none">Saved!</small>
+    </div>
+  </div>
+</form>
+<script src="/static/js/settings.js"></script>
+{% endblock %}
+{% block footer %}{% endblock %}

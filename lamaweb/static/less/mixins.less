@@ -20,3 +20,13 @@
     border: (@radius / 5) solid @color;
     border-radius: @radius;
 }
+
+.centerize(@width, @height, @padding-horizontal:30px, @padding-vertical:50px) {
+    left: 50%;
+    top: 50%;
+    width: @width;
+    height: @height;
+    margin-top: ((@height / 2) * -1) - @padding-vertical;
+    margin-left: ((@width / 2) * -1) - @padding-horizontal;
+    padding: @padding-horizontal @padding-vertical;
+}

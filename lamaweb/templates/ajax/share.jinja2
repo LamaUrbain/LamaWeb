@@ -1,0 +1,12 @@
+{% extends 'base.jinja2' %}
+{% block title %}
+<i class="flaticon-share"></i>
+Share <span class="text-main">Lama</span> <span class="text-secondary">Urbain</span>{% endblock %}
+{% block body %}
+<div class="text-center">
+  {% set url = '' %}
+  {% set btntype = 'main btn-lg' %}
+  {% include '../include/shareButtons.jinja2' %}
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}

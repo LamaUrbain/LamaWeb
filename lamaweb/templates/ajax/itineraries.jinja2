@@ -1,0 +1,48 @@
+{% extends 'base.jinja2' %}
+{% block title %}
+<i class="flaticon-itinerary"></i>
+Your Itineraries{% endblock %}
+{% block body %}
+<table class="table table-bordered table-striped">
+  <tr>
+    <th>Name</th>
+    <th>Departure</th>
+    <th>Destination(s)</th>
+    <th>Actions</th>
+  </tr>
+  {% for itinerary in itineraries %}
+  <tr>
+    <th>
+      {{ itinerary.name }}
+    </th>
+    <td>
+      <a href="/search?arrival={{ itinerary.departure }}">
+	{{ itinerary.departure }}
+      </a>
+    </td>
+    <td>
+      {% for destination in itinerary.destinations %}
+      <a href="/search/?arrival={{ destination }}">
+	{{ destination }}
+      </a><br>
+      {% endfor %}
+    </td>
+    <td>
+      <form method="POST" action="/ajax/deleteItinerary">
+	<input type="hidden" name="id" value="{{ itinerary.id }}">
+	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & Edit itinerary" target="_blank" class="btn btn-link">
+	  <i class="flaticon-itinerary"></i>
+	</a>
+	<button type="submit" name="deleteItinerary" class="btn btn-link">
+	  <i class="flaticon-delete"></i>
+	</button>
+	{% set url="/itinerary/" + itinerary.id|string %}
+	{% include '../include/shareButtons.jinja2' %}
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<script src="/static/js/itineraries.js"></script>
+{% endblock %}
+{% block footer %}{% endblock %}

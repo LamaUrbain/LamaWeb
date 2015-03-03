@@ -18,224 +18,103 @@
 
     <div id="map"></div>
 
+    {% if error %}
+    <div id="error">
+      <h1>Error</h1>
+      <div class="alert alert-danger">{{ error }}</div>
+    </div>
+    {% else %}
     {% block content %}{% endblock %}
+    {% endif %}
 
     <div id="navbar-toggler">
       <a href="#" class="menu"><i class="flaticon-menu"></i></a>
       <nav>
-	<h1 class="text-main">
+	<h1 class="text-main text-center">
 	  Lama <span class="text-secondary">Urbain</span>
 	</h1>
 
+	<!-- TODO -->
+	<!-- if not logged in -->
 	<ul class="nav">
 	  <li class="dropdown-header">Welcome</li>
 	  <li>
-	    <a href="/signup">
+	    <a href="#signup" data-toggle="ajaxmodal">
 	      <div class="icon"><i class="flaticon-signup"></i></div>
 	      Sign Up
 	    </a>
 	  </li>
 	  <li>
-	    <a href="/login">
-	      <span>Login</span>
+	    <a href="#login" data-toggle="ajaxmodal">
+	      <span>Sign In</span>
 	      <div class="icon"><i class="flaticon-lock"></i></div>
 	    </a>
 	  </li>
+	  <!-- TODO -->
+	  <!-- else -- = logged in -->
 	  <li class="dropdown-header">You</li>
 	  <li>
-	    <a href="/profile">
+	    <a href="#profile" data-toggle="ajaxmodal">
 	      <span>Your profile</span>
 	      <div class="icon"><i class="flaticon-defaultavatar"></i></div>
 	    </a>
 	  </li>
 	  <li>
-	    <a href="/itineraries">
+	    <a href="#itineraries" data-toggle="ajaxmodal" data-size="lg">
 	      <span>Your itineraries</span>
 	      <div class="icon"><i class="flaticon-itinerary"></i></div>
 	    </a>
 	  </li>
 	  <li>
-	    <a href="/settings">
+	    <a href="#settings" data-toggle="ajaxmodal">
 	      <span>Your settings</span>
 	      <div class="icon"><i class="flaticon-settings"></i></div>
 	    </a>
 	  </li>
+	  <li>
+	    <a href="/logout">
+	      <span>Logout</span>
+	      <div class="icon"><i class="flaticon-logout"></i></div>
+	    </a>
+	  </li>
+	  <!-- TODO -->
+	  <!-- endif -->
 	  <li class="dropdown-header">More</li>
 	  <li>
-	    <a href="/contact">
+	    <a href="http://eip.epitech.eu/2016/lamaurbain/#contact" target="_blank">
 	      <span>Contact</span>
 	      <div class="icon"><i class="flaticon-contact"></i></div>
 	    </a>
 	  </li>
 	  <li>
-	    <a href="/help">
+	    <a href="#help" data-toggle="ajaxmodal" data-size="lg">
 	      <span>Help</span>
 	      <div class="icon"><i class="flaticon-help"></i></div>
+	    </a>
+	  </li>
+	  <li>
+	    <a href="#share" data-toggle="ajaxmodal" data-size="sm">
+	      <span>Share</span>
+	      <div class="icon"><i class="flaticon-share"></i></div>
 	    </a>
 	  </li>
 	</ul>
       </nav>
     </div>
 
-
     <footer>
-      <a href="#about" data-toggle="modal">About</a> -
-      <a href="#terms" data-toggle="modal">Terms of services</a> -
-      <a href="#privacy" data-toggle="modal">Privacy Policy</a>
+      <a href="#about" data-toggle="ajaxmodal" data-size="lg">About</a> -
+      <a href="#terms" data-toggle="ajaxmodal">Terms of services</a> -
+      <a href="#privacy" data-toggle="ajaxmodal">Privacy Policy</a>
     </footer>
 
-    <div class="modal fade" id="about">
-      <div class="modal-dialog modal-lg">
-	<div class="modal-content">
-	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	    <h4 class="modal-title">About</h4>
-	  </div>
-	  <div class="modal-body">
-	    <h4 class="section-heading">Features</h4>
-	    <div class="row text-center">
-	      <div class="col-md-3">
-		<span class="fa-stack fa-4x">
-		  <i class="fa fa-circle fa-stack-2x text-main"></i>
-		  <i class="fa fa-map-marker fa-stack-1x fa-inverse"></i>
-		</span>
-		<h4 class="service-heading">Smart Itineraries</h4>
-		<p class="text-muted">Easily search for the best itinerary between 2 or more points on a map and modify it on the go to suit your need.</p>
-	      </div>
-	      <div class="col-md-3">
-		<span class="fa-stack fa-4x">
-		  <i class="fa fa-circle fa-stack-2x text-main"></i>
-		  <i class="fa fa-rocket fa-stack-1x fa-inverse"></i>
-		</span>
-		<h4 class="service-heading">Public Transportation</h4>
-		<p class="text-muted">LamaUrbain knows the best options to travel and will offer itineraries based on RATP, SNCF and walkable directions.</p>
-	      </div>
-	      <div class="col-md-3">
-		<span class="fa-stack fa-4x">
-		  <i class="fa fa-circle fa-stack-2x text-main"></i>
-		  <i class="fa fa-share-alt fa-stack-1x fa-inverse"></i>
-		</span>
-		<h4 class="service-heading">Social</h4>
-		<p class="text-muted">Share itineraries with your friends and edit them together to better prepare for your incredible adventure together.</p>
-	      </div>
-	      <div class="col-md-3">
-		<span class="fa-stack fa-4x">
-		  <i class="fa fa-circle fa-stack-2x text-main"></i>
-		  <i class="fa fa-mobile-phone fa-stack-1x fa-inverse"></i>
-		</span>
-		<h4 class="service-heading">Multi-Platform</h4>
-		<p class="text-muted">Available on iOs, Android, Windows Phone and all your favorite web browsers.</p>
-	      </div>
-	    </div>
-	    <hr>
-	    <h4>Team</h4>
-	    <p class="text-muted">All the Lama Urbain team study at Epitech, the European Institute Of Technology.</p>
-	    <div class="text-center">
-	      <div class="row">
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/enguerrand.jpg" class="img-responsive img-circle" alt="Enguerrand">
-		    <h4>Enguerrand</h4>
-		    <p class="text-muted">Project Manager, Global developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/gregoire.jpg" class="img-responsive img-circle" alt="Grégoire">
-		    <h4>Grégoire</h4>
-		    <p class="text-muted">API &amp; Website Developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/moreno.jpg" class="img-responsive img-circle" alt="Moreno">
-		    <h4>Moreno</h4>
-		    <p class="text-muted">API &amp; Website Developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/donas.jpg" class="img-responsive img-circle" alt="Donas">
-		    <h4>Donas</h4>
-		    <p class="text-muted">API &amp; Website Developer</p>
-		  </div>
-		</div>
-	      </div>
-	      <div class="row">
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/jacques-pascal.jpg" class="img-responsive img-circle" alt="Jacques-Pascal">
-		    <h4>Jacques-Pascal</h4>
-		    <p class="text-muted">API &amp; Website Developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/vincent.jpg" class="img-responsive img-circle" alt="Vincent">
-		    <h4>Vincent</h4>
-		    <p class="text-muted">Mobile Developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/gaelle.jpg" class="img-responsive img-circle" alt="Gaëlle">
-		    <h4>Gaëlle</h4>
-		    <p class="text-muted">Mobile Developer</p>
-		  </div>
-		</div>
-		<div class="col-sm-3">
-		  <div class="team-member">
-		    <img src="/static/team/louis.jpg" class="img-responsive img-circle" alt="Louis">
-		    <h4>Louis</h4>
-		    <p class="text-muted">Mobile Developer</p>
-		  </div>
-		</div>
-	      </div>
-	    </div>
-	    <h4>Icons credits</h4>
-	    <div>Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/daniel-bruce" title="Daniel Bruce">Daniel Bruce</a>, <a href="http://www.flaticon.com/authors/scott-de-jonge" title="Scott de Jonge">Scott de Jonge</a>, <a href="http://www.flaticon.com/authors/elegant-themes" title="Elegant Themes">Elegant Themes</a>, <a href="http://www.flaticon.com/authors/picol" title="Picol">Picol</a>, <a href="http://www.flaticon.com/authors/appzgear" title="Appzgear">Appzgear</a>, <a href="http://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a>, <a href="http://www.flaticon.com/authors/icons8" title="Icons8">Icons8</a>, <a href="http://www.flaticon.com/authors/google" title="Google">Google</a>, <a href="http://www.flaticon.com/authors/icon-works" title="Icon Works">Icon Works</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-	  </div>
-	  <div class="modal-footer">
-	    <button type="button" class="btn btn-main" data-dismiss="modal">Got it!</button>
-	  </div>
-	</div>
-      </div>
-    </div>
-      
-    <div class="modal fade" id="terms">
+    <div class="modal fade" id="modal">
       <div class="modal-dialog">
 	<div class="modal-content">
-	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	    <h4 class="modal-title">Terms of Services</h4>
-	  </div>
-	  <div class="modal-body">
-	    Terms of services
-	  </div>
-	  <div class="modal-footer">
-	    <button type="button" class="btn btn-main" data-dismiss="modal">Got it!</button>
-	  </div>
 	</div>
       </div>
     </div>
-      
-    <div class="modal fade" id="privacy">
-      <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	    <h4 class="modal-title">Privacy</h4>
-	  </div>
-	  <div class="modal-body">
-	    Privacy
-	  </div>
-	  <div class="modal-footer">
-	    <button type="button" class="btn btn-main" data-dismiss="modal">Got it!</button>
-	  </div>
-	</div>
-      </div>
-    </div>
-      
+
     <script src="/static/js/ol.js"></script>
     <script src="/static/bower/jquery/dist/jquery.min.js"></script>
     <script src="/static/bower/bootstrap/dist/js/bootstrap.min.js"></script>

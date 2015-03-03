@@ -1,0 +1,26 @@
+{% extends 'base.jinja2' %}
+{% block title %}
+<i class="flaticon-defaultavatar"></i>
+Your Profile{% endblock %}
+{% block body %}
+<div class="row">
+  <div class="col-md-8">
+    <h2>{{ user.email }}</h2>
+    <br><br>
+    <table class="table table-bordered table-striped">
+      <tr>
+	<th>Itineraries</th>
+	<td>
+	  <a href="#itineraries" data-toggle="ajaxmodal">
+	    {{ user.total_itineraries }}
+	  </a>
+	</td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <img src="{{ user.avatar }}" class="img-responsive" alt="avatar">
+  </div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}

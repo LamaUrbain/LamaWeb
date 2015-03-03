@@ -1,0 +1,11 @@
+{% set url = "http://lamaurbain.cha.moe" + url %}
+{% if not btntype %}
+{% set btntype = 'link' %}
+{% endif %}
+{% set status = "Check out out this itinerary! "  + url %}
+<a href="https://www.facebook.com/sharer/sharer.php?u={{ url|urlencode }}" class="btn btn-{{ btntype }}">
+  <i class="flaticon-facebook"></i>
+</a>
+<a href="http://twitter.com/home/?status={{ status|urlencode }}" class="btn btn-{{ btntype }}">
+  <i class="flaticon-twitter"></i>
+</a>
