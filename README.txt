@@ -13,6 +13,9 @@ source env/bin/activate
 # Install dependencies
 python setup.py develop
 
+# Install open layers
+wget http://openlayers.org/en/v3.1.1/build/ol.js -O lamaweb/static/js/ol.js
+
 # Install client-side dependencies & compile CSS
 npm install bower
 bower install
