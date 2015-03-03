@@ -11,6 +11,9 @@
 
     <div id="searchbox">
       <form method="GET">
+	{% if itinerary %}
+	<h2 class="text-main"><i class="flaticon-itinerary"></i> {{ itinerary.name }}</h2>
+	{% endif %}
 	<input type="text" class="form-control search" placeholder="Departure" name="point1"{% if itinerary %} value="{{ itinerary.departure }}"{% elif departure %} value="{{ departure }}"{% endif %}>
 	{% if itinerary %}
 	{% for destination in itinerary.destinations %}
