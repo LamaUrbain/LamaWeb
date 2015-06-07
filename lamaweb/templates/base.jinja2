@@ -34,8 +34,7 @@
 	  Lama <span class="text-secondary">Urbain</span>
 	</h1>
 
-	<!-- TODO -->
-	<!-- if not logged in -->
+	{% if not authentified %}
 	<ul class="nav">
 	  <li class="dropdown-header">Welcome</li>
 	  <li>
@@ -50,8 +49,7 @@
 	      <div class="icon"><i class="flaticon-lock"></i></div>
 	    </a>
 	  </li>
-	  <!-- TODO -->
-	  <!-- else -- = logged in -->
+	  {% else %}
 	  <li class="dropdown-header">You</li>
 	  <li>
 	    <a href="#profile" data-toggle="ajaxmodal">
@@ -77,8 +75,7 @@
 	      <div class="icon"><i class="flaticon-logout"></i></div>
 	    </a>
 	  </li>
-	  <!-- TODO -->
-	  <!-- endif -->
+	  {% endif %}
 	  <li class="dropdown-header">More</li>
 	  <li>
 	    <a href="http://eip.epitech.eu/2016/lamaurbain/#contact" target="_blank">
@@ -115,6 +112,11 @@
       </div>
     </div>
 
+    <script>
+      var apiurl = '{{ apiurl }}';
+      var apiitiurl = '{{ apiitiurl }}';
+    </script>
+    {% block jsvariables %}{% endblock %}
     <script src="/static/js/ol.js"></script>
     <script src="/static/bower/jquery/dist/jquery.min.js"></script>
     <script src="/static/bower/bootstrap/dist/js/bootstrap.min.js"></script>

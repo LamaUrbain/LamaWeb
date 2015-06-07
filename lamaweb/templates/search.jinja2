@@ -2,6 +2,13 @@
 {% block js %}
 <script src="/static/js/search.js"></script>
 {% endblock %}
+{% block jsvariables %}
+<script>
+  {% if itineraryjson %}
+  var itinerary = {{ itineraryjson|safe }};
+  {% endif %}
+</script>
+{% endblock %}
 {% block content %}
     <div id="logo">
       <a href="/">
@@ -10,11 +17,11 @@
     </div>
 
     <div id="searchbox">
-      <form method="GET">
+      <form method="POST">
 	{% if itinerary %}
 	<h2 class="text-main"><i class="flaticon-itinerary"></i> {{ itinerary.name }}</h2>
 	{% endif %}
-	<input type="text" class="form-control search" placeholder="Departure" name="point1"{% if itinerary %} value="{{ itinerary.departure }}"{% elif departure %} value="{{ departure }}"{% endif %}>
+	<input type="text" class="form-control search" placeholder="Departure" name="point1"{% if itinerary %} value="{{ itinerary.departure.address }}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
 	{% if itinerary %}
 	{% for destination in itinerary.destinations %}
 	{% if loop.index != itinerary.destinations|length %}
@@ -31,7 +38,16 @@
 	{% endif %}
 	{% endfor %}
 	{% endif %}
-	<div class="destination"><input type="text" class="form-control search" placeholder="Arrival" name="arrival"{% if itinerary %} value="{{ last_destination }}"{% elif arrival %} value="{{ arrival }}"{% endif %}></div>
+	<div class="destination row">
+	  <div class="col-xs-10">
+	    <input type="text" class="form-control search" placeholder="Destination" name="arrival"{% if itinerary %} value="{{ last_destination.address }}"{% elif 'arrival' in request.POST %} value="{{ request.POST['arrival'] }}"{% endif %}>
+	  </div>
+	  <div class="col-xs-2">
+	    <a class="btn btn-secondary" href="#deleteDestination">
+	      <i class="flaticon-delete"></i>
+	    </a>
+	  </div>
+	</div>
 	<div class="text-right">
 	  <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
 	  <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="flaticon-more"></i></a>

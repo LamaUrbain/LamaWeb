@@ -1,36 +1,39 @@
 # -*- coding: utf-8 -*-
 import hashlib, urllib
+import requests
+import pyramid.threadlocal
 
-# TODO
-# all those functions should make API calls instead
+class ApiRequest(object):
+    def __init__(self):
+        registry = pyramid.threadlocal.get_current_registry()
+        settings = registry.settings
+        self.api_url = settings['apiurl']
+        self.session = requests.Session()
 
-def getItineraries(user):
-    return [
-        {
-            'id': 12345,
-            'name': u'Buy a wallet',
-            'departure': u'Chatelet les Halles, Paris',
-            'destinations': [
-                u'Pont neuf, Paris',
-                u'Gare Montparnasse, Paris',
-            ],
-        },
-        {
-            'id': 12346,
-            'name': u'Home to school',
-            'departure': u'12 rue de la Convention, Le Kremlin-Bicêtre',
-            'destinations': [
-                u'47 Rue Danton, Le Kremlin-Bicêtre',
-            ],
-        },
-    ]
+    def get(self, path, *args, **kwargs):
+        return self.session.get(self.api_url + path, **kwargs)
 
-def getItinerary(user, id):
-    itineraries = getItineraries(user)
-    for itinerary in itineraries:
-        if itinerary['id'] == id:
-            return itinerary
-    return None
+    def post(self, path, *args, **kwargs):
+        return self.session.post(self.api_url + path, **kwargs).json()
+
+    def delete(self, path, *args, **kwargs):
+        return self.session.delete(self.api_url + path, **kwargs).json()
+
+###############################################################################
+# Itineraries Endpoint
+
+def getItineraries(username):
+    return ApiRequest().get('/itineraries/', params={'owner': username})
+
+def getItinerary(id):
+    i = ApiRequest().get('/itineraries/' + str(id) + '/')
+    return i.json()
+
+def createItinerary(departure, name=None, destination=None, favorite=False):
+    return ApiRequest().post('/itineraries/', params={'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite})
+
+###############################################################################
+# Users Endpoint
 
 def getGravatar(email):
     default = 'retro'
@@ -38,10 +41,17 @@ def getGravatar(email):
             + hashlib.md5(email.lower()).hexdigest()
             + "?" + urllib.urlencode({ 'd': default, 's': 200 }))
 
-def getUser():
-    user = {
-        'email': 'decorne.en@gmail.com',
-        'total_itineraries': len(getItineraries('a')),
-    }
-    user['avatar'] = getGravatar(user['email'])
-    return user
+def getUser(username):
+    return ApiRequest().get('/users/' + username + '/')
+
+def createUser(username, password, email):
+    return ApiRequest().post('/users/', params={'username': username, 'password': password, 'email': email})
+
+###############################################################################
+# Tokens Endpoint
+
+def authenticate(username, password):
+    return ApiRequest().post('/tokens/', params={'username': username, 'password': password})
+
+def logout(token):
+    return ApiRequest().delete('/tokens/' + token + '/')
