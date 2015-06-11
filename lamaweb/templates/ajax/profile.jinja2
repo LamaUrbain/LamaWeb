@@ -5,21 +5,19 @@ Your Profile{% endblock %}
 {% block body %}
 <div class="row">
   <div class="col-md-8">
-    <h2>{{ user.email }}</h2>
+    <h2>{{ user.username }} <small>{{ user.email }}</small></h2>
     <br><br>
-    <table class="table table-bordered table-striped">
-      <tr>
-	<th>Itineraries</th>
-	<td>
-	  <a href="#itineraries" data-toggle="ajaxmodal">
-	    {{ user.total_itineraries }}
-	  </a>
-	</td>
-      </tr>
-    </table>
+    <a href="#itineraries" data-toggle="ajaxmodal" class="btn btn-main btn-lg" data-size="lg">
+      <i class="flaticon-itinerary"></i> Your itineraries
+    </a>
+    <a href="#settings" data-toggle="ajaxmodal" class="btn btn-secondary btn-lg">
+      <i class="flaticon-settings"></i> Your settings
+    </a>
   </div>
   <div class="col-md-4">
-    <img src="{{ user.avatar }}" class="img-responsive" alt="avatar">
+    <a href="http://gravatar.com/" target="_blank">
+      <img src="{{ user.avatar }}" class="img-responsive" alt="avatar">
+    </a>
   </div>
 </div>
 {% endblock %}

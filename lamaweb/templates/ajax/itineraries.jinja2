@@ -5,26 +5,26 @@ Your Itineraries{% endblock %}
 {% block body %}
 <table class="table table-bordered table-striped">
   <tr>
-    <th>Name</th>
+    <th style="min-width: 200px">Name</th>
     <th>Departure</th>
     <th>Destination(s)</th>
-    <th>Actions</th>
+    <th style="min-width: 200px">Actions</th>
   </tr>
   {% for itinerary in itineraries %}
   <tr>
     <th>
-      {{ itinerary.name }}
+      <a href="/itinerary/{{ itinerary.id }}" target="_blank">
+	{{ itinerary.name }}
+      </a>
     </th>
     <td>
-      <a href="/search?arrival={{ itinerary.departure }}">
-	{{ itinerary.departure }}
-      </a>
+      {% set coordinate=itinerary.departure %}
+      {% include '../include/coordinate.jinja2' %}
     </td>
     <td>
       {% for destination in itinerary.destinations %}
-      <a href="/search/?arrival={{ destination }}">
-	{{ destination }}
-      </a><br>
+      {% set coordinate=destination %}
+      {% include '../include/coordinate.jinja2' %}
       {% endfor %}
     </td>
     <td>

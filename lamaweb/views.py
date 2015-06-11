@@ -65,12 +65,11 @@ def ajaxSettings(request):
 
 @view_config(route_name='ajaxProfile', renderer='templates/ajax/profile.jinja2')
 def ajaxProfile(request):
-    request.user = api.getUser() # should be set automatically when logged in
-    return { 'user': request.user }
+    return { 'user': request.session['auth_user'] }
 
 @view_config(route_name='ajaxItineraries', renderer='templates/ajax/itineraries.jinja2')
 def ajaxItineraries(request):
-    itineraries = api.getItineraries(api.getUser())
+    itineraries = api.getItineraries(username=request.session['auth_user']['username'])
     return { 'itineraries': itineraries }
 
 @view_config(route_name='ajaxLogin', renderer='templates/ajax/login.jinja2')
@@ -115,21 +114,21 @@ def ajaxFormDelete(request):
 def ajaxFormLogin(request):
     if 'username' in request.POST and 'password' in request.POST:
         # call api to login
-        auth = api.authenticate(request.POST['username'], request.POST['password'])
+        auth = api.authenticate(username=request.POST['username'], password=request.POST['password'])
         # add auth token to session
         request.session['auth_token'] = auth['token']
         # get api user
-        user = api.getUser(username)
+        user = api.getUser(username=request.POST["username"])
         # add user to session
         request.session['auth_user'] = user
     # redirect to /
-    return HTTPFound(location='/')
+    return HTTPFound(location='/#profile')
 
 @view_config(route_name='logout')
 def logout(request):
     if 'auth_token' in request.session:
         # call api to invalidate auth token (logout)
-        self.logout(request.session['auth_token'])
+        api.logout(token=request.session['auth_token'])
         # delete auth token from session
         del request.session['auth_token']
         # delete user from session
