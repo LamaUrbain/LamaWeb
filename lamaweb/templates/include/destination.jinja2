@@ -1,0 +1,13 @@
+	<div class="destination row">
+	  <div class="col-xs-10">
+	    <input type="text" class="form-control search" placeholder="Destination" name="destination-{{ index }}" value="{% if coordinate %}{% include 'coordinate.jinja2' %}{% endif %}" data-index="{{ index }}" data-old-destination="{% if coordinate %}{% include 'coordinate.jinja2' %}{% endif %}">
+	  </div>
+	  <div class="col-xs-2">
+	    <a class="btn btn-main edit-destination" href="#editDestination" style="display: none;">
+	      <i class="flaticon-cursor"></i>
+	    </a>
+	    <a class="btn btn-secondary delete-destination" href="#deleteDestination">
+	      <i class="flaticon-delete"></i>
+	    </a>
+	  </div>
+	</div>

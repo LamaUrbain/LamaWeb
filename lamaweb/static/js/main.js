@@ -1,3 +1,6 @@
+var map = 0;
+var mapView = 0;
+var itineraryLayerSource = 0;
 
 function modal(url, size) {
     size = (typeof size == 'undefined' ? '' : size);
@@ -44,6 +47,70 @@ function coordinateToIcon(coordinate, png) {
     return iconFeature
 }
 
+function removeLayer(name) {
+    var layers = map.getLayers();
+    layers.forEach(function(layer) {
+	if (layer.get('name') == name) {
+	    map.removeLayer(layer);
+	    return;
+	}
+    });
+}
+
+function refreshLayer(name) {
+    itineraryLayerSource.dispatchEvent('change')
+}
+
+function iconsVector() {
+    var icons = [coordinateToIcon(itinerary.departure, '/static/departure.png')];
+    for (i in itinerary.destinations) {
+	icons.push(coordinateToIcon(itinerary.destinations[i], '/static/arrival.png'));
+    }
+    var iconsVector = new ol.source.Vector({
+	features: icons
+    });
+    return iconsVector
+}
+
+function iconsLayer() {
+    var iconsLayer = new ol.layer.Vector({
+	source: iconsVector(),
+	name: 'Icons'
+    });
+    return iconsLayer
+}
+
+function getExtent() {
+    var north = itinerary.departure.latitude;
+    var south = itinerary.departure.latitude;
+    var west = itinerary.departure.longitude;
+    var east = itinerary.departure.longitude;
+    for (i in itinerary.destinations) {
+	var dest = itinerary.destinations[i];
+	if (dest.latitude < north) {
+	    north = dest.latitude;
+	}
+	if (dest.latitude > south) {
+	    south = dest.latitude;
+	}
+	if (dest.longitude < west) {
+	    west = dest.longitude;
+	}
+	if (dest.longitude > east) {
+	    east = dest.longitude;
+	}
+    }
+    return [west, north, east, south];
+}
+
+function fitExtent() {
+    if (typeof itinerary != 'undefined') {
+	var extent = getExtent();
+	extent = ol.extent.applyTransform(extent, ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
+	mapView.fitExtent(extent, map.getSize());
+    }
+}
+
 function mapHandler() {
     var layers = [
 	new ol.layer.Tile({
@@ -51,39 +118,29 @@ function mapHandler() {
 	}),
     ];
     if (typeof itinerary != 'undefined') {
-	layers.push(new ol.layer.Tile({
-	    source: new ol.source.XYZ({
-		url: apiitiurl + '/itineraries/' + itinerary.id + '/tiles/{z}/{x}/{y}',
-		crossOrigin: 'null'
-	    })
-	}));
-	var icons = [coordinateToIcon(itinerary.departure, '/static/departure.png')];
-	for (i in itinerary.destinations) {
-	    icons.push(coordinateToIcon(itinerary.destinations[i], '/static/arrival.png'));
-	}
-	var iconsLayer = new ol.layer.Vector({
-	    source: new ol.source.Vector({
-		features: icons
-	    })
+	itineraryLayerSource = new ol.source.XYZ({
+	    url: apiurl + '/itineraries/tiles/' + itinerary.id + '/{z}/{x}/{y}',
+	    crossOrigin: 'null',
+	    name: 'Itinerary'
 	});
-	layers.push(iconsLayer);
+	layers.push(new ol.layer.Tile({
+	    source: itineraryLayerSource,
+	    name: 'Itinerary'
+	}));
+	layers.push(iconsLayer());
     }
-    var mapView = new ol.View({
+    mapView = new ol.View({
 	center: [260791.0276881127, 6249673.658616584],
 	zoom: 13.8,
+	maxZoom: 16
     });
-    var map = new ol.Map({
+    map = new ol.Map({
 	target: 'map',
 	layers: layers,
 	view: mapView
     });
-    var extent = [itinerary.destinations[0].longitude,
-		  itinerary.destinations[0].latitude,
-		  itinerary.departure.longitude,
-		  itinerary.departure.latitude];
-    extent = ol.extent.applyTransform(extent, ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-    mapView.fitExtent(extent, map.getSize());
-    return map;
+    fitExtent();
+    return [map, mapView];
 }
 
 heightHandler();
@@ -99,4 +156,4 @@ if (hash != '') {
 	modal(hash, a.attr('data-size'));
     }
 }
-map = mapHandler();
+mapHandler();

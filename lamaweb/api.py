@@ -4,33 +4,50 @@ import requests
 import pyramid.threadlocal
 
 class ApiRequest(object):
-    def __init__(self):
+    def __init__(self, api_url=None):
         registry = pyramid.threadlocal.get_current_registry()
         settings = registry.settings
-        self.api_url = settings['apiurl']
+        if api_url is None:
+            self.api_url = settings['apiurl']
+        else: self.api_url = api_url
         self.session = requests.Session()
 
     def get(self, path, *args, **kwargs):
         return self.session.get(self.api_url + path, **kwargs)
 
     def post(self, path, *args, **kwargs):
-        return self.session.post(self.api_url + path, **kwargs).json()
+        return self.session.post(self.api_url + path, **kwargs)
+
+    def put(self, path, *args, **kwargs):
+        return self.session.put(self.api_url + path, **kwargs)
 
     def delete(self, path, *args, **kwargs):
-        return self.session.delete(self.api_url + path, **kwargs).json()
+        return self.session.delete(self.api_url + path, **kwargs)
 
 ###############################################################################
 # Itineraries Endpoint
 
 def getItineraries(username):
-    return ApiRequest().get('/itineraries/', params={'owner': username})
+    return ApiRequest().get('/itineraries/', params={'owner': username}).json()
 
 def getItinerary(id):
-    i = ApiRequest().get('/itineraries/' + str(id) + '/')
-    return i.json()
+    return ApiRequest().get('/itineraries/' + str(id)).json()
 
-def createItinerary(departure, name=None, destination=None, favorite=False):
-    return ApiRequest().post('/itineraries/', params={'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite})
+def createItinerary(departure, name=None, destination=None, favorite=None):
+    return ApiRequest().post('/itineraries/', data={'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite}).json()
+
+def editItinerary(departure=None, name=None, favorite=None):
+    return ApiRequest().put('/itineraries/', data={'name': name, 'departure': departure, 'favorite': favorite})
+
+def addDestination(itinerary, destination):
+    return ApiRequest().post('/itineraries/destinations/' + itinerary, data={'destination': destination}).json()
+
+def editDestination(itinerary, position, destination):
+    return ApiRequest().put('/itineraries/destinations/' + itinerary + '/' + position,
+                            params={'destination': destination}).json()
+
+def deleteDestination(itinerary, position):
+    return ApiRequest().delete('/itineraries/' + itinerary + '/destinations/' + position + '/').json()
 
 ###############################################################################
 # Users Endpoint
@@ -42,16 +59,20 @@ def getGravatar(email):
             + "?" + urllib.urlencode({ 'd': default, 's': 200 }))
 
 def getUser(username):
-    return ApiRequest().get('/users/' + username + '/')
+    user = ApiRequest(api_url='http://poney.paysdu42.fr/lamaurbain/').get('/users/' + username + '/').json()
+    user['avatar'] = getGravatar(user['email'])
+    return user
 
 def createUser(username, password, email):
-    return ApiRequest().post('/users/', params={'username': username, 'password': password, 'email': email})
+    user = ApiRequest(api_url='http://poney.paysdu42.fr/lamaurbain/').post('/users/', data={'username': username, 'password': password, 'email': email}).json()
+    user['avatar'] = getGravatar(user['email'])
+    return user
 
 ###############################################################################
 # Tokens Endpoint
 
 def authenticate(username, password):
-    return ApiRequest().post('/tokens/', params={'username': username, 'password': password})
+    return ApiRequest(api_url='http://poney.paysdu42.fr/lamaurbain/').post('/tokens/', data={'username': username, 'password': password}).json()
 
 def logout(token):
-    return ApiRequest().delete('/tokens/' + token + '/')
+    ApiRequest(api_url='http://poney.paysdu42.fr/lamaurbain/').delete('/tokens/' + token + '/')

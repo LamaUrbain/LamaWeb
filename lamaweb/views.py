@@ -7,7 +7,6 @@ import api
 def globalContext(request):
     return {
         'apiurl': pyramid.threadlocal.get_current_registry().settings['apiurl'],
-        'apiitiurl': pyramid.threadlocal.get_current_registry().settings['apiitiurl'],
         'authentified': True if 'auth_token' in request.session else False,
         'user': request.session['auth_user'] if 'auth_user' in request.session else None,
     }
@@ -18,13 +17,13 @@ def home(request):
 
 @view_config(route_name='search', renderer='templates/search.jinja2')
 def search(request):
+    context = globalContext(request)
     if 'departure' in request.POST:
         itinerary = api.createItinerary(departure=request.POST['departure'],
                                         name=(request.POST['name'] if 'name' in request.POST else None),
                                         destination=(request.POST['arrival'] if 'arrival' in request.POST else None),
                                         favorite=(True if 'name' in request.POST else False))
-        return HTTPFound(location='/itinerary/' + context['itinerary']['id'])
-    context = globalContext(request)
+        return HTTPFound(location='/itinerary/' + str(itinerary['id']))
     return context
 
 @view_config(route_name='itinerary', renderer='templates/search.jinja2')
@@ -45,7 +44,6 @@ def itinerary(request):
     # delete itinerary
     # redirect to /
     context['itinerary'] = itinerary
-    context['last_destination'] = itinerary['destinations'][-1]
     context['itineraryjson'] = json.dumps(itinerary)
     return context
 
@@ -161,3 +159,34 @@ def ajaxFormSignup(request):
         request.session['auth_user'] = user
     # redirect to /
     return HTTPFound(location='/')
+
+@view_config(route_name='ajaxAddDestination', renderer='json')
+def ajaxFormAddDestination(request):
+    if 'destination' in request.POST and 'itinerary' in request.POST:
+        return api.addDestination(itinerary=request.POST['itinerary'], destination=request.POST['destination'])
+    request.response.status = 400
+    return { 'error': 'Missing parameter' }
+
+@view_config(route_name='ajaxEditDestination', renderer='json')
+def ajaxFormEditDestination(request):
+    if 'itinerary' in request.POST and 'destination' in request.POST and 'position' in request.POST:
+        return api.editDestination(itinerary=request.POST['itinerary'],
+                                   destination=request.POST['destination'],
+                                   position=request.POST['position'])
+    request.response.status = 400
+    return { 'error': 'Missing parameter' }
+
+@view_config(route_name='ajaxDeleteDestination', renderer='json')
+def ajaxFormDeleteDestination(request):
+    if 'itinerary' in request.POST and 'position' in request.POST:
+        return api.deleteDestination(itinerary=request.POST['itinerary'],
+                                     position=request.POST['position'])
+    request.response.status = 400
+    return { 'error': 'Missing parameter' }
+
+@view_config(route_name='ajaxEditItinerary', renderer='json')
+def ajaxEditItinerary(request):
+    if 'departure' in request.POST:
+        return api.editItinerary(departure=request.POST['departure'])
+    if 'favorite' in request.POST:
+        return api.editItinerary(favorite=request.POST['favorite'])

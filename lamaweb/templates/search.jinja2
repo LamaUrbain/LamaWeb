@@ -17,45 +17,54 @@
     </div>
 
     <div id="searchbox">
+      <!-- Template filled in JQuery -->
+      <div id="destination-template" class="hidden">
+	{% set index=0 %}
+	{% include 'include/destination.jinja2' %}
+      </div> <!-- template -->
       <form method="POST">
 	{% if itinerary %}
-	<h2 class="text-main"><i class="flaticon-itinerary"></i> {{ itinerary.name }}</h2>
+	<h2 id="itinerary" data-id="{{ itinerary.id }}"
+	    class="text-main"><i class="flaticon-itinerary"></i>
+	  {% if itinerary.name %}
+	  {{ itinerary.name }}
+	  {% else %}
+	  Your Itinerary
+	  {% endif %}
+	</h2>
 	{% endif %}
-	<input type="text" class="form-control search" placeholder="Departure" name="point1"{% if itinerary %} value="{{ itinerary.departure.address }}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
-	{% if itinerary %}
-	{% for destination in itinerary.destinations %}
-	{% if loop.index != itinerary.destinations|length %}
-	<div class="destination row">
-	  <div class="col-xs-10">
-	    <input type="text" class="form-control search" placeholder="Destination" name="point{{ loop.index }}" value="{{ destination }}">
+	<div id="departure" class="row">
+	  <div class="col-xs-12">
+	    <input type="text" class="form-control search" placeholder="Departure" name="departure"{% if itinerary %} value="{% set coordinate=itinerary.departure %}{% include 'include/coordinate.jinja2' %}{% set coordinate=None %}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
 	  </div>
-	  <div class="col-xs-2">
-	    <a class="btn btn-secondary" href="#deleteDestination">
-	      <i class="flaticon-delete"></i>
+	  <div class="col-xs-2" style="display: none;">
+	    <a class="btn btn-main edit-destination" href="#editDeparture">
+	      <i class="flaticon-cursor"></i>
 	    </a>
 	  </div>
 	</div>
-	{% endif %}
-	{% endfor %}
-	{% endif %}
-	<div class="destination row">
-	  <div class="col-xs-10">
-	    <input type="text" class="form-control search" placeholder="Destination" name="arrival"{% if itinerary %} value="{{ last_destination.address }}"{% elif 'arrival' in request.POST %} value="{{ request.POST['arrival'] }}"{% endif %}>
-	  </div>
-	  <div class="col-xs-2">
-	    <a class="btn btn-secondary" href="#deleteDestination">
-	      <i class="flaticon-delete"></i>
-	    </a>
-	  </div>
+	<div id="destinations">
+	  {% if not itinerary or not itinerary.destinations %}
+	    {% set index=0 %}
+	    {% include 'include/destination.jinja2' %}
+	  {% elif itinerary %}
+	    {% for coordinate in itinerary.destinations %}
+	      {% set index=loop.index0 %}
+	      {% include 'include/destination.jinja2' %}
+	    {% endfor %}
+	  {% endif %}
 	</div>
 	<div class="text-right">
 	  <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
-	  <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="flaticon-more"></i></a>
+	  <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="text-main flaticon-more"></i></a>
+	  {% if itinerary %}
+	  {% else %}
+	  <button type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
+	  {% endif %}
 	  <!-- TODO -->
 	  <!-- jquery on click: -->
 	  <!-- if save, call ajax form /ajax/save and refresh map -->
 	  <!-- if search, just refresh map -->
-	  <button type="submit" class="btn btn-secondary submit">{% if itinerary %}<i class="flaticon-star"></i> Save{% else %}<i class="flaticon-search"></i> Search{% endif %}</button>
 	</div>
 	<div id="more" class="collapse text-right">
 	  <br>
@@ -63,6 +72,11 @@
 	  {% set url = '/itinerary/' + itinerary.id|string %}
 	  {% set btntype = 'main' %}
 	  {% include 'include/shareButtons.jinja2' %}
+	  {% if itinerary.favorite %}
+	  <a href="#favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</a>
+	  {% else %}
+	  <a href="#removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Remove</a>
+	  {% endif %}
 	  <button type="submit" class="btn btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
 	  {% else %}
 	  <input type="text" class="form-control search" placeholder="Itinerary name" name="name">
