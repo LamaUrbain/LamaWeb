@@ -2,7 +2,10 @@
 {% if not btntype %}
 {% set btntype = 'link' %}
 {% endif %}
-{% set status = "Check out out this itinerary! "  + url %}
+{% if not status %}
+{% set status = "Check out out this itinerary!" %}
+{% endif %}
+{% set status = status + ' ' + url + ' #openstreetmap @lama_urbain' %}
 <a href="https://www.facebook.com/sharer/sharer.php?u={{ url|urlencode }}" class="btn btn-{{ btntype }}" data-toggle="tooltip" data-placement="top" title="Share on Facebook">
   <i class="flaticon-facebook"></i>
 </a>
