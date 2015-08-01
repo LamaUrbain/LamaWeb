@@ -119,7 +119,7 @@ function mapHandler() {
     ];
     if (typeof itinerary != 'undefined') {
 	itineraryLayerSource = new ol.source.XYZ({
-	    url: apiurl + '/itineraries/tiles/' + itinerary.id + '/{z}/{x}/{y}',
+	    url: apiurl + '/itineraries/' + itinerary.id + 'tiles/{z}/{x}/{y}',
 	    crossOrigin: 'null',
 	    name: 'Itinerary'
 	});
