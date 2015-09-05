@@ -16,10 +16,7 @@ class ApiRequest(object):
 
     def r(self, response):
         if response.status_code == 200:
-            try:
-                return response
-            except ValueError:
-                raise ApiError('Invalid response: ' + response.text)
+            return response
         raise ApiError('Error %d %s' % (response.status_code, response.text))
 
     def get(self, path, *args, **kwargs):
