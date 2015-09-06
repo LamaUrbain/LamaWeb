@@ -1,6 +1,5 @@
 var map = 0;
 var mapView = 0;
-var itineraryLayerSource = 0;
 
 function modal(url, size) {
     size = (typeof size == 'undefined' ? '' : size);
@@ -47,18 +46,22 @@ function coordinateToIcon(coordinate, png) {
     return iconFeature
 }
 
-function removeLayer(name) {
+function getLayer(name) {
     var layers = map.getLayers();
+    var theLayer = 0;
     layers.forEach(function(layer) {
 	if (layer.get('name') == name) {
-	    map.removeLayer(layer);
-	    return;
+	    theLayer = layer;
 	}
     });
+    return theLayer;
 }
 
-function refreshLayer(name) {
-    itineraryLayerSource.dispatchEvent('change')
+function removeLayer(name) {
+    var layer = getLayer(name);
+    if (layer != 0) {
+	map.removeLayer(layer);
+    }
 }
 
 function iconsVector() {
@@ -111,6 +114,18 @@ function fitExtent() {
     }
 }
 
+function itineraryLayer () {
+    var itineraryLayerSource = new ol.source.XYZ({
+	url: apiurl + '/itineraries/' + itinerary.id + '/tiles/{z}/{x}/{y}' + '?time=' + new Date().getTime(),
+	crossOrigin: 'null',
+	name: 'Itinerary'
+    });
+    return (new ol.layer.Tile({
+	source: itineraryLayerSource,
+	name: 'Itinerary'
+    }));
+}
+
 function mapHandler() {
     var layers = [
 	new ol.layer.Tile({
@@ -118,15 +133,7 @@ function mapHandler() {
 	}),
     ];
     if (typeof itinerary != 'undefined') {
-	itineraryLayerSource = new ol.source.XYZ({
-	    url: apiurl + '/itineraries/' + itinerary.id + '/tiles/{z}/{x}/{y}',
-	    crossOrigin: 'null',
-	    name: 'Itinerary'
-	});
-	layers.push(new ol.layer.Tile({
-	    source: itineraryLayerSource,
-	    name: 'Itinerary'
-	}));
+	layers.push(itineraryLayer());
 	layers.push(iconsLayer());
     }
     mapView = new ol.View({

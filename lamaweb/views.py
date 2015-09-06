@@ -197,7 +197,7 @@ def ajaxFormDeleteDestination(request):
 
 @view_config(route_name='ajaxEditItinerary', renderer='json')
 def ajaxEditItinerary(request):
-    if 'departure' in request.POST:
-        return api.editItinerary(departure=request.POST['departure'])
-    if 'favorite' in request.POST:
-        return api.editItinerary(favorite=request.POST['favorite'])
+    if 'itinerary' in request.POST and 'departure' in request.POST:
+        return api.editItinerary(itinerary=request.POST['itinerary'], departure=request.POST['departure'])
+    if 'itinerary' in request.POST and 'favorite' in request.POST:
+        return api.editItinerary(itinerary=request.POST['itinerary'], favorite=request.POST['favorite'])

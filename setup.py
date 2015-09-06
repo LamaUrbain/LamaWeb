@@ -12,6 +12,7 @@ requires = [
     'pyramid_debugtoolbar',
     'waitress',
     'requests',
+    'geopy',
     ]
 
 setup(name='LamaWeb',

@@ -12,7 +12,7 @@ function newDestinationElement(index) {
 	if (itinerary.destinations[index].address) {
 	    input.val(itinerary.destinations[index].address);
 	} else if (itinerary.destinations[index].latitude) {
-	    input.val(itinerary.destinations[index].latitude + ', ' + itinerary.destinations[index].longitude);
+	    input.val(itinerary.destinations[index].latitude + ',' + itinerary.destinations[index].longitude);
 	}
     }
     input.attr('data-old-destination', input.val());
@@ -30,11 +30,11 @@ function reloadDestinations() {
 
 function reloadMapIcons() {
     // reload itinerary
-    refreshLayer('Itinerary');
+    removeLayer('Itinerary');
+    map.addLayer(itineraryLayer());
     // reload icons
     removeLayer('Icons');
-    layer = iconsLayer()
-    map.addLayer(layer);
+    map.addLayer(iconsLayer());
     // zoom, center
     fitExtent();
 }
@@ -137,11 +137,16 @@ $(document).ready(function() {
 		    type: 'POST',
 		    url: '/ajax/form/edititinerary',
 		    data: {
+			'itinerary': itinerary.id,
 			'departure': input.val()
 		    },
 		    success: function(new_itinerary) {
 			itinerary = new_itinerary;
-			input.val(itinerary.departure);
+			if (itinerary.departure.address) {
+			    input.val(itinerary.departure.address);
+			} else if (itinerary.departure.latitude) {
+			    input.val(itinerary.departure.latitude + ',' + itinerary.departure.longitude);
+			}
 			resetDeparture();
 		    },
 		    error: genericAjaxError,

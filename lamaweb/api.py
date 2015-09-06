@@ -2,6 +2,8 @@
 import hashlib, urllib
 import requests
 import pyramid.threadlocal
+import re
+from geopy.geocoders import Nominatim
 
 class ApiError(Exception): pass
 
@@ -32,6 +34,27 @@ class ApiRequest(object):
         return self.r(self.session.delete(self.api_url + path, **kwargs))
 
 ###############################################################################
+# Geolocation
+
+geolocator = Nominatim()
+
+def geocode(address):
+    l = geolocator.geocode(address)
+    return str(l.latitude) + ',' + str(l.longitude)
+
+def isLatLong(string):
+    return re.match('^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$', string) is not None
+
+def geoParams(params):
+    if 'departure' in params and not isLatLong(params['departure']):
+        params['departure_address'] = params['departure']
+        params['departure'] = geocode(params['departure'])
+    if 'destination' in params and not isLatLong(params['destination']):
+        params['destination_address'] = params['destination']
+        params['destination'] = geocode(params['destination'])
+    return params
+
+###############################################################################
 # Itineraries Endpoint
 
 def getItineraries(username):
@@ -41,20 +64,20 @@ def getItinerary(id):
     return ApiRequest().get('/itineraries/' + str(id)).json()
 
 def createItinerary(departure, name=None, destination=None, favorite=None):
-    return ApiRequest().post('/itineraries/', data={'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite}).json()
+    return ApiRequest().post('/itineraries/', data=geoParams({'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite})).json()
 
-def editItinerary(departure=None, name=None, favorite=None):
-    return ApiRequest().put('/itineraries/', data={'name': name, 'departure': departure, 'favorite': favorite})
+def editItinerary(itinerary, departure=None, name=None, favorite=None):
+    return ApiRequest().put('/itineraries/' + itinerary, params=geoParams({'name': name, 'departure': departure, 'favorite': favorite})).json()
 
 def addDestination(itinerary, destination):
-    return ApiRequest().post('/itineraries/' + itinerary + '/destinations/', data={'destination': destination}).json()
+    return ApiRequest().post('/itineraries/' + itinerary + '/destinations', data=geoParams({'destination': destination})).json()
 
 def editDestination(itinerary, position, destination):
     return ApiRequest().put('/itineraries/' + itinerary + '/destinations/' + position,
-                            params={'destination': destination}).json()
+                            params=geoParams({'destination': destination})).json()
 
 def deleteDestination(itinerary, position):
-    return ApiRequest().delete('/itineraries/' + itinerary + '/destinations/' + position + '/').json()
+    return ApiRequest().delete('/itineraries/' + itinerary + '/destinations/' + position).json()
 
 ###############################################################################
 # Users Endpoint
