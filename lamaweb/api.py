@@ -79,8 +79,8 @@ def getItineraries(request, username):
 def getItinerary(request, id):
     return ApiRequest().get('/itineraries/' + str(id), params=prepareParams(request)).json()
 
-def createItinerary(request, departure, name=None, destination=None, favorite=None):
-    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite, 'token': 'trszxtdNAPdemekmwYsnFNZKopKOwGKK'}, token=True)).json()
+def createItinerary(request, departure, destination=None):
+    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'departure': departure, 'destination': destination, 'token': 'trszxtdNAPdemekmwYsnFNZKopKOwGKK'}, token=True)).json()
 
 def editItinerary(request, itinerary, departure=None, name=None, favorite=None):
     return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite}, token=True)).json()

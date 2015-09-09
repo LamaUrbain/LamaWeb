@@ -57,8 +57,9 @@
   </form>
   <div class="text-right">
     <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
+    {% if itinerary %}
     <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="text-main flaticon-more"></i></a>
-    {% if not itinerary %}
+    {% else %}
     <button name="search" type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
     {% endif %}
   </div>
