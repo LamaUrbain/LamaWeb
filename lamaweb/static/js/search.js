@@ -148,6 +148,7 @@ $(document).ready(function() {
 			    input.val(itinerary.departure.latitude + ',' + itinerary.departure.longitude);
 			}
 			resetDeparture();
+			reloadMapIcons();
 		    },
 		    error: genericAjaxError,
 		    dataType: 'json'
