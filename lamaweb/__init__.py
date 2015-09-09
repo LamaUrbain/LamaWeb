@@ -24,6 +24,7 @@ def main(global_config, **settings):
     config.add_route('ajaxSettings', '/ajax/settings')
     config.add_route('ajaxProfile', '/ajax/profile')
     config.add_route('ajaxItineraries', '/ajax/itineraries')
+    config.add_route('ajaxHistory', '/ajax/history')
     config.add_route('ajaxLogin', '/ajax/login')
     config.add_route('ajaxSignup', '/ajax/signup')
     config.add_route('ajaxContact', '/ajax/contact')

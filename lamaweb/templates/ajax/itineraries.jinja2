@@ -1,22 +1,26 @@
 {% extends 'base.jinja2' %}
 {% block title %}
-<i class="flaticon-itinerary"></i>
-Your Itineraries{% endblock %}
+<i class="flaticon-{% if history %}itinerary{% else %}star{% endif %}"></i>
+{% if history %}Your History{% else %}Your Favorites{% endif %}{% endblock %}
 {% block body %}
 <table class="table table-bordered table-striped">
   <tr>
-    <th style="min-width: 200px">Name</th>
     <th>Departure</th>
     <th>Destination(s)</th>
     <th style="min-width: 200px">Actions</th>
   </tr>
   {% for itinerary in itineraries %}
   <tr>
-    <th>
+    <th colspan="3">
       <a href="/itinerary/{{ itinerary.id }}" target="_blank">
+	{% if itinerary.name and not history %}
 	{{ itinerary.name }}
+	{% else %}
+	{% endif %}
       </a>
     </th>
+  </tr>
+  <tr>
     <td>
       {% set coordinate=itinerary.departure %}
       {% include '../include/coordinate.jinja2' %}
@@ -42,14 +46,16 @@ Your Itineraries{% endblock %}
     <td>
       <form method="POST" action="/ajax/form/deleteitinerary">
 	<input type="hidden" name="itinerary" value="{{ itinerary.id }}">
-	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & Edit itinerary" target="_blank" class="btn btn-link">
+	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & {% if history %}Save{% else %}Edit{% endif %} itinerary" target="_blank" class="btn btn-link">
 	  <i class="flaticon-itinerary"></i>
 	</a>
-	<button type="submit" name="deleteItinerary" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Delete this itinerary">
+	<button type="submit" name="deleteItinerary" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Delete this {% if history %}from your history{% else %}itinerary{% endif %}">
 	  <i class="flaticon-delete"></i>
 	</button>
+	{% if not history %}
 	{% set url="/itinerary/" + itinerary.id|string %}
 	{% include '../include/shareButtons.jinja2' %}
+	{% endif %}
       </form>
     </td>
   </tr>

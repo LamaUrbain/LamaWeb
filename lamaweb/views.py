@@ -86,8 +86,15 @@ def ajaxProfile(request):
 
 @view_config(route_name='ajaxItineraries', renderer='templates/ajax/itineraries.jinja2')
 def ajaxItineraries(request):
-    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'])
+    # search itineraries that are favorited by the user
+    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'], favorite=True)
     return { 'itineraries': itineraries }
+
+@view_config(route_name='ajaxHistory', renderer='templates/ajax/itineraries.jinja2')
+def ajaxHistory(request):
+    # show the history of all the itineraries searched by the user (regardless favorites)
+    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'])
+    return { 'itineraries': itineraries, 'history': True }
 
 @view_config(route_name='ajaxLogin', renderer='templates/ajax/login.jinja2')
 def ajaxLogin(request):
