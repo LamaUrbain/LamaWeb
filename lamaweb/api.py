@@ -40,44 +40,53 @@ geolocator = Nominatim()
 
 def geocode(address):
     l = geolocator.geocode(address)
-    return str(l.latitude) + ',' + str(l.longitude)
+    if l is not None:
+        return (str(l.latitude) + ',' + str(l.longitude), l.address)
+    raise ApiError('Invalid Location ' + address)
 
 def isLatLong(string):
     return re.match('^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$', string) is not None
 
-def geoParams(params):
-    if 'departure' in params and not isLatLong(params['departure']):
-        params['departure_address'] = params['departure']
-        params['departure'] = geocode(params['departure'])
-    if 'destination' in params and not isLatLong(params['destination']):
-        params['destination_address'] = params['destination']
-        params['destination'] = geocode(params['destination'])
+###############################################################################
+# Parameters wrapper to handle authentication & geocoding
+
+def prepareParams(request, params={}, token=False):
+    if token and 'auth_token' in request.session:
+        params['token'] = request.session['auth_token']
+    if 'departure' in params and params['departure'] and not isLatLong(params['departure']):
+        params['departure'], params['departure_address'] = geocode(params['departure'])
+    if 'destination' in params and params['destination'] and not isLatLong(params['destination']):
+        params['destination'], params['destination_address'] = geocode(params['destination'])
+    print params
     return params
 
 ###############################################################################
 # Itineraries Endpoint
 
-def getItineraries(username):
-    return ApiRequest().get('/itineraries/', params={'owner': username}).json()
+def getItineraries(request, username):
+    return ApiRequest().get('/itineraries/', params=prepareParams(request, {'owner': username})).json()
 
-def getItinerary(id):
-    return ApiRequest().get('/itineraries/' + str(id)).json()
+def getItinerary(request, id):
+    return ApiRequest().get('/itineraries/' + str(id), params=prepareParams(request)).json()
 
-def createItinerary(departure, name=None, destination=None, favorite=None):
-    return ApiRequest().post('/itineraries/', data=geoParams({'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite})).json()
+def createItinerary(request, departure, name=None, destination=None, favorite=None):
+    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite}, token=True)).json()
 
-def editItinerary(itinerary, departure=None, name=None, favorite=None):
-    return ApiRequest().put('/itineraries/' + itinerary, params=geoParams({'name': name, 'departure': departure, 'favorite': favorite})).json()
+def editItinerary(request, itinerary, departure=None, name=None, favorite=None):
+    return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite}, token=True)).json()
 
-def addDestination(itinerary, destination):
-    return ApiRequest().post('/itineraries/' + itinerary + '/destinations', data=geoParams({'destination': destination})).json()
+def addDestination(request, itinerary, destination):
+    return ApiRequest().post('/itineraries/' + itinerary + '/destinations', data=prepareParams(request, {'destination': destination}, token=True)).json()
 
-def editDestination(itinerary, position, destination):
+def editDestination(request, itinerary, position, destination):
     return ApiRequest().put('/itineraries/' + itinerary + '/destinations/' + position,
-                            params=geoParams({'destination': destination})).json()
+                            params=prepareParams(request, {'destination': destination}, token=True)).json()
 
-def deleteDestination(itinerary, position):
-    return ApiRequest().delete('/itineraries/' + itinerary + '/destinations/' + position).json()
+def deleteDestination(request, itinerary, position):
+    return ApiRequest().delete('/itineraries/' + itinerary + '/destinations/' + position, params=prepareParams(request, token=True)).json()
+
+def deleteItinerary(request, itinerary):
+    ApiRequest().delete('/itineraries/' + itinerary, params=prepareParams(request, token=True))
 
 ###############################################################################
 # Users Endpoint
@@ -88,22 +97,30 @@ def getGravatar(email):
             + hashlib.md5(email.lower()).hexdigest()
             + "?" + urllib.urlencode({ 'd': default, 's': 200 }))
 
-def getUser(username):
-    user = ApiRequest().get('/users/' + username + '/').json()
+def getUser(request, username):
+    user = ApiRequest().get('/users/' + username, params=prepareParams(request)).json()
     user['avatar'] = getGravatar(user['email'])
     return user
 
-def createUser(username, password, email):
-    data = {'username': username, 'password': password, 'email': email}
-    user = ApiRequest().post('/users/', data=data).json()
+def createUser(request, username, password, email):
+    user = ApiRequest().post('/users/', data=prepareParams(request, {'username': username, 'password': password, 'email': email})).json()
     user['avatar'] = getGravatar(user['email'])
     return user
+
+def editUser(request, username, password=None, email=None, sponsor=None):
+    user = ApiRequest().put('/users/' + username, params=prepareParams(request, {'password': password, 'email': email}, token=True)).json()
+    user['avatar'] = getGravatar(user['email'])
+    return user
+
+def deleteUser(request, username):
+    ApiRequest().delete('/users/' + username, params=prepareParams(request, {}, token=True))
 
 ###############################################################################
 # Tokens Endpoint
 
-def authenticate(username, password):
-    return ApiRequest().post('/sessions/', data={'username': username, 'password': password}).json()
+def authenticate(request, username, password):
+    return ApiRequest().post('/sessions/', data=prepareParams(request, {'username': username, 'password': password})).json()
 
-def logout(token):
-    ApiRequest().delete('/sessions/' + token)
+def logout(request):
+    if 'auth_token' in request.session:
+        ApiRequest().delete('/sessions/' + request.session['auth_token'], params=prepareParams(request))

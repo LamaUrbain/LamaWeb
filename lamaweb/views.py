@@ -31,7 +31,8 @@ def home(request):
 def search(request):
     context = globalContext(request)
     if 'departure' in request.POST:
-        itinerary = api.createItinerary(departure=request.POST['departure'],
+        itinerary = api.createItinerary(request=request,
+                                        departure=request.POST['departure'],
                                         name=(request.POST['name'] if 'name' in request.POST else None),
                                         destination=(request.POST['arrival'] if 'arrival' in request.POST else None),
                                         favorite=(True if 'name' in request.POST else False))
@@ -47,7 +48,7 @@ def itinerary(request):
         request.response.status = 400
         return { 'error': 'Invalid Itinerary id' }
     id = int(id)
-    itinerary = api.getItinerary(id)
+    itinerary = api.getItinerary(request, id)
     if not itinerary:
         request.response.status = 404
         return { 'error': 'Itinerary not found' }
@@ -81,7 +82,7 @@ def ajaxProfile(request):
 
 @view_config(route_name='ajaxItineraries', renderer='templates/ajax/itineraries.jinja2')
 def ajaxItineraries(request):
-    itineraries = api.getItineraries(username=request.session['auth_user']['username'])
+    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'])
     return { 'itineraries': itineraries }
 
 @view_config(route_name='ajaxLogin', renderer='templates/ajax/login.jinja2')
@@ -126,11 +127,11 @@ def ajaxFormDelete(request):
 def ajaxFormLogin(request):
     if 'username' in request.POST and 'password' in request.POST:
         # call api to login
-        auth = api.authenticate(username=request.POST['username'], password=request.POST['password'])
+        auth = api.authenticate(request, username=request.POST['username'], password=request.POST['password'])
         # add auth token to session
         request.session['auth_token'] = auth['token']
         # get api user
-        user = api.getUser(username=request.POST["username"])
+        user = api.getUser(request, username=request.POST["username"])
         # add user to session
         request.session['auth_user'] = user
     # redirect to /
@@ -140,7 +141,7 @@ def ajaxFormLogin(request):
 def logout(request):
     if 'auth_token' in request.session:
         # call api to invalidate auth token (logout)
-        api.logout(token=request.session['auth_token'])
+        api.logout(request)
         # delete auth token from session
         del request.session['auth_token']
         # delete user from session
@@ -161,9 +162,9 @@ def ajaxFormSettings(request):
 def ajaxFormSignup(request):
     if 'username' in request.POST and 'password' in request.POST and 'email' in request.POST:
         # call api to create user
-        user = api.createUser(request.POST['username'], request.POST['password'], request.POST['email'])
+        user = api.createUser(request, request.POST['username'], request.POST['password'], request.POST['email'])
         # call api to login
-        auth = api.authenticate(request.POST['username'], request.POST['password'])
+        auth = api.authenticate(request, request.POST['username'], request.POST['password'])
         # add auth token to session
         request.session['auth_token'] = auth['token']
         # add user to session
@@ -174,14 +175,14 @@ def ajaxFormSignup(request):
 @view_config(route_name='ajaxAddDestination', renderer='json')
 def ajaxFormAddDestination(request):
     if 'destination' in request.POST and 'itinerary' in request.POST:
-        return api.addDestination(itinerary=request.POST['itinerary'], destination=request.POST['destination'])
+        return api.addDestination(request, itinerary=request.POST['itinerary'], destination=request.POST['destination'])
     request.response.status = 400
     return { 'error': 'Missing parameter' }
 
 @view_config(route_name='ajaxEditDestination', renderer='json')
 def ajaxFormEditDestination(request):
     if 'itinerary' in request.POST and 'destination' in request.POST and 'position' in request.POST:
-        return api.editDestination(itinerary=request.POST['itinerary'],
+        return api.editDestination(request, itinerary=request.POST['itinerary'],
                                    destination=request.POST['destination'],
                                    position=request.POST['position'])
     request.response.status = 400
@@ -190,7 +191,7 @@ def ajaxFormEditDestination(request):
 @view_config(route_name='ajaxDeleteDestination', renderer='json')
 def ajaxFormDeleteDestination(request):
     if 'itinerary' in request.POST and 'position' in request.POST:
-        return api.deleteDestination(itinerary=request.POST['itinerary'],
+        return api.deleteDestination(request, itinerary=request.POST['itinerary'],
                                      position=request.POST['position'])
     request.response.status = 400
     return { 'error': 'Missing parameter' }
@@ -198,6 +199,6 @@ def ajaxFormDeleteDestination(request):
 @view_config(route_name='ajaxEditItinerary', renderer='json')
 def ajaxEditItinerary(request):
     if 'itinerary' in request.POST and 'departure' in request.POST:
-        return api.editItinerary(itinerary=request.POST['itinerary'], departure=request.POST['departure'])
+        return api.editItinerary(request, itinerary=request.POST['itinerary'], departure=request.POST['departure'])
     if 'itinerary' in request.POST and 'favorite' in request.POST:
-        return api.editItinerary(itinerary=request.POST['itinerary'], favorite=request.POST['favorite'])
+        return api.editItinerary(request, itinerary=request.POST['itinerary'], favorite=request.POST['favorite'])
