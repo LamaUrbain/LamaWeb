@@ -1,13 +1,9 @@
 
-function genericAjaxError(xhr, status, error) {
-    alert(eval("(" + xhr.responseText + ")").error);
-}
-
 function newDestinationElement(index) {
     var newTemplate = $($("#destination-template").html());
     var input = newTemplate.find('input');
-    input.prop('name', 'destination-' + index);
-    input.prop('data-index', index);
+    input.attr('name', 'destination-' + index);
+    input.attr('data-index', index);
     if (typeof itinerary != 'undefined' && typeof itinerary.destinations[index] != 'undefined') {
 	if (itinerary.destinations[index].address) {
 	    input.val(itinerary.destinations[index].address);
@@ -179,8 +175,3 @@ $(document).ready(function() {
 	});
     }
 });
-
-// TODO
-// handle click on search / save button
-// if save, call ajax form /ajax/save then refresh the map
-// if search, just refresh the map

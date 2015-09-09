@@ -31,21 +31,24 @@ def home(request):
 def search(request):
     context = globalContext(request)
     if 'departure' in request.POST:
+        # create itinerary
         itinerary = api.createItinerary(request,
                                         departure=request.POST['departure'],
                                         destination=(request.POST['destination-0'] if 'destination-0' in request.POST else None))
+        # if there's more destinations, add them all
         i = 1
         while ('destination-' + str(i)) in request.POST:
             itinerary = api.addDestination(request, str(itinerary['id']), request.POST['destination-' + str(i)])
             i += 1
+        # redirect to the created itinerary
         return HTTPFound(location='/itinerary/' + str(itinerary['id']))
-    elif 'name' in request.POST or 'favorite' in request.POST or 'removefavorite' in request.POST:
-        api.editItinerary()
+    # return empty search form
     return context
 
 @view_config(route_name='itinerary', renderer='templates/search.jinja2')
 def itinerary(request):
     context = globalContext(request)
+    # get itinerary
     di = request.matchdict
     id = di.get("id", None)
     if not id or not id.isdigit():
@@ -56,10 +59,20 @@ def itinerary(request):
     if not itinerary:
         request.response.status = 404
         return { 'error': 'Itinerary not found' }
-    # TODO
-    # if 'delete' in request.POST
-    # delete itinerary
-    # redirect to /
+
+    # if a form to edit the form had been submitted
+    if ('name' in request.POST and request.POST['name']) or 'favorite' in request.POST or 'removefavorite' in request.POST:
+        # edit name or favorite
+        itinerary = api.editItinerary(request,
+                                      itinerary=str(itinerary['id']),
+                                      favorite=('true' if 'favorite' in request.POST else ('false' if 'removefavorite' in request.POST else None)),
+                                      name=(request.POST['name'] if 'name' in request.POST and request.POST['name'] else None))
+    elif 'delete' in request.POST:
+        # delete itinerary
+        api.deleteItinerary(request, itinerary=str(itinerary['id']))
+        # redirect to homepage after itinerary deleted
+        return HTTPFound('/')
+    # return itinerary
     context['itinerary'] = itinerary
     context['itineraryjson'] = json.dumps(itinerary)
     return context
@@ -116,24 +129,6 @@ def ajaxHelp(request):
 def ajaxShare(request):
     return globalContext(request)
 
-@view_config(route_name='ajaxFormSave')
-def ajaxFormSave(request):
-    # TODO
-    # save itinerary
-    # called on click button save on search.js on existing itinerary
-    # handled by jquery on search.js
-    # return empty on OK response
-    return globalContext(request)
-
-@view_config(route_name='ajaxFormDelete')
-def ajaxFormDelete(request):
-    # TODO
-    # delete itinerary
-    # called on click delete on itineraries modal
-    # handled by jquery on itineraries.js
-    # return empty on OK response
-    return globalContext(request)
-
 @view_config(route_name='ajaxFormLogin')
 def ajaxFormLogin(request):
     if 'username' in request.POST and 'password' in request.POST:
@@ -185,6 +180,7 @@ def ajaxFormSignup(request):
 
 @view_config(route_name='ajaxAddDestination', renderer='json')
 def ajaxFormAddDestination(request):
+    # add a destination to an existing itinerary
     if 'destination' in request.POST and 'itinerary' in request.POST:
         return api.addDestination(request, itinerary=request.POST['itinerary'], destination=request.POST['destination'])
     request.response.status = 400
@@ -192,6 +188,7 @@ def ajaxFormAddDestination(request):
 
 @view_config(route_name='ajaxEditDestination', renderer='json')
 def ajaxFormEditDestination(request):
+    # edit an existing destination in an existing itinerary
     if 'itinerary' in request.POST and 'destination' in request.POST and 'position' in request.POST:
         return api.editDestination(request, itinerary=request.POST['itinerary'],
                                    destination=request.POST['destination'],
@@ -201,6 +198,7 @@ def ajaxFormEditDestination(request):
 
 @view_config(route_name='ajaxDeleteDestination', renderer='json')
 def ajaxFormDeleteDestination(request):
+    # delete a destination in an itinerary
     if 'itinerary' in request.POST and 'position' in request.POST:
         return api.deleteDestination(request, itinerary=request.POST['itinerary'],
                                      position=request.POST['position'])
@@ -209,13 +207,13 @@ def ajaxFormDeleteDestination(request):
 
 @view_config(route_name='ajaxEditItinerary', renderer='json')
 def ajaxEditItinerary(request):
+    # edit the departure in an existing itinerary
     if 'itinerary' in request.POST and 'departure' in request.POST:
         return api.editItinerary(request, itinerary=request.POST['itinerary'], departure=request.POST['departure'])
-    if 'itinerary' in request.POST and 'favorite' in request.POST:
-        return api.editItinerary(request, itinerary=request.POST['itinerary'], favorite=request.POST['favorite'])
 
 @view_config(route_name='ajaxDeleteItinerary', renderer='json')
 def ajaxDeleteItinerary(request):
+    # delete an itinerary (from list of itineraries)
     if 'itinerary' in request.POST:
         api.deleteItinerary(request, itinerary=request.POST['itinerary'])
-    return HTTPFound(location='/#itineraries')
+    return {}
