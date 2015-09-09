@@ -202,3 +202,9 @@ def ajaxEditItinerary(request):
         return api.editItinerary(request, itinerary=request.POST['itinerary'], departure=request.POST['departure'])
     if 'itinerary' in request.POST and 'favorite' in request.POST:
         return api.editItinerary(request, itinerary=request.POST['itinerary'], favorite=request.POST['favorite'])
+
+@view_config(route_name='ajaxDeleteItinerary', renderer='json')
+def ajaxDeleteItinerary(request):
+    if 'itinerary' in request.POST:
+        api.deleteItinerary(request, itinerary=request.POST['itinerary'])
+    return HTTPFound(location='/#itineraries')

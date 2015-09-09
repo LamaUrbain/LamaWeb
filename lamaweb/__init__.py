@@ -40,6 +40,7 @@ def main(global_config, **settings):
     config.add_route('ajaxEditDestination', '/ajax/form/editdestination')
     config.add_route('ajaxDeleteDestination', '/ajax/form/deletedestination')
     config.add_route('ajaxEditItinerary', '/ajax/form/edititinerary')
+    config.add_route('ajaxDeleteItinerary', '/ajax/form/deleteitinerary')
 
     config.scan()
     return config.make_wsgi_app()

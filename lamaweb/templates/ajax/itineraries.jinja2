@@ -28,8 +28,8 @@ Your Itineraries{% endblock %}
       {% endfor %}
     </td>
     <td>
-      <form method="POST" action="/ajax/deleteItinerary">
-	<input type="hidden" name="id" value="{{ itinerary.id }}">
+      <form method="POST" action="/ajax/form/deleteitinerary">
+	<input type="hidden" name="itinerary" value="{{ itinerary.id }}">
 	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & Edit itinerary" target="_blank" class="btn btn-link">
 	  <i class="flaticon-itinerary"></i>
 	</a>
