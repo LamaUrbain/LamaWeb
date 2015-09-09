@@ -8,7 +8,7 @@ function newDestinationElement(index) {
     var input = newTemplate.find('input');
     input.prop('name', 'destination-' + index);
     input.prop('data-index', index);
-    if (typeof itinerary.destinations[index] != 'undefined') {
+    if (typeof itinerary != 'undefined' && typeof itinerary.destinations[index] != 'undefined') {
 	if (itinerary.destinations[index].address) {
 	    input.val(itinerary.destinations[index].address);
 	} else if (itinerary.destinations[index].latitude) {
@@ -167,6 +167,16 @@ $(document).ready(function() {
 	});
 
 	destinationsHandler();
+    } else {
+	$('button[name=search]').click(function(e) {
+	    e.preventDefault();
+	    $('#searchform').submit();
+	});
+	$('a[href=#addDestination]').click(function(e) {
+	    e.preventDefault();
+	    var lastIndex = $('#destinations').find('.destination').last().find('input').attr('data-index');
+	    $('#destinations').append(newDestinationElement(parseInt(lastIndex) + 1));
+	});
     }
 });
 

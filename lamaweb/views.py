@@ -12,16 +12,16 @@ def globalContext(request):
         'user': request.session['auth_user'] if 'auth_user' in request.session else None,
     }
 
-@view_config(context=Exception)
-def error_view(exc, request):
-    response = render_to_response(('json' if 'ajax' in request.url else 'templates/home.jinja2'), {'error': exc.args[0] if isinstance(exc, api.ApiError) else "Unknown" + ((" ("+ exc.args[0] + ")") if exc.args else "")}, request=request)
-    if exc.args and '404' in exc.args[0]:
-        response.status_int = 404
-    elif exc.args and '400' in exc.args[0]:
-        response.status_int = 400
-    else:
-        response.status_int = 500
-    return response
+# @view_config(context=Exception)
+# def error_view(exc, request):
+#     response = render_to_response(('json' if 'ajax' in request.url else 'templates/home.jinja2'), {'error': exc.args[0] if isinstance(exc, api.ApiError) else "Unknown" + ((" ("+ exc.args[0] + ")") if exc.args else "")}, request=request)
+#     if exc.args and '404' in exc.args[0]:
+#         response.status_int = 404
+#     elif exc.args and '400' in exc.args[0]:
+#         response.status_int = 400
+#     else:
+#         response.status_int = 500
+#     return response
 
 @view_config(route_name='home', renderer='templates/home.jinja2')
 def home(request):
@@ -31,12 +31,18 @@ def home(request):
 def search(request):
     context = globalContext(request)
     if 'departure' in request.POST:
-        itinerary = api.createItinerary(request=request,
+        itinerary = api.createItinerary(request,
                                         departure=request.POST['departure'],
                                         name=(request.POST['name'] if 'name' in request.POST else None),
-                                        destination=(request.POST['arrival'] if 'arrival' in request.POST else None),
+                                        destination=(request.POST['destination-0'] if 'destination-0' in request.POST else None),
                                         favorite=(True if 'name' in request.POST else False))
+        # i = 1
+        # while ('destination-' + str(i)) in request.POST:
+        #     itinerary = api.addDestination(request, str(itinerary['id']), request.POST['destination-' + str(i)])
+        #     i += 1
         return HTTPFound(location='/itinerary/' + str(itinerary['id']))
+    elif 'name' in request.POST or 'favorite' in request.POST or 'removefavorite' in request.POST:
+        api.editItinerary()
     return context
 
 @view_config(route_name='itinerary', renderer='templates/search.jinja2')

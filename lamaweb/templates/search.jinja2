@@ -10,79 +10,74 @@
 </script>
 {% endblock %}
 {% block content %}
-    <div id="logo">
-      <a href="/">
-	<img src="/static/shadow_small.png" alt="Lama Urbain" class="logo">
-      </a>
-    </div>
+<div id="logo">
+  <a href="/">
+    <img src="/static/shadow_small.png" alt="Lama Urbain" class="logo">
+  </a>
+</div>
 
-    <div id="searchbox">
-      <!-- Template filled in JQuery -->
-      <div id="destination-template" class="hidden">
-	{% set index=0 %}
-	{% include 'include/destination.jinja2' %}
-      </div> <!-- template -->
-      <form method="POST">
-	{% if itinerary %}
-	<h2 id="itinerary" data-id="{{ itinerary.id }}"
-	    class="text-main"><i class="flaticon-itinerary"></i>
-	  {% if itinerary.name %}
-	  {{ itinerary.name }}
-	  {% else %}
-	  Your Itinerary
-	  {% endif %}
-	</h2>
-	{% endif %}
-	<div id="departure" class="row">
-	  <div class="col-xs-12">
-	    <input type="text" class="form-control search" placeholder="Departure" name="departure"{% if itinerary %} value="{% set coordinate=itinerary.departure %}{% include 'include/coordinate.jinja2' %}{% set coordinate=None %}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
-	  </div>
-	  <div class="col-xs-2" style="display: none;">
-	    <a class="btn btn-main edit-destination" href="#editDeparture">
-	      <i class="flaticon-cursor"></i>
-	    </a>
-	  </div>
-	</div>
-	<div id="destinations">
-	  {% if not itinerary or not itinerary.destinations %}
-	    {% set index=0 %}
-	    {% include 'include/destination.jinja2' %}
-	  {% elif itinerary %}
-	    {% for coordinate in itinerary.destinations %}
-	      {% set index=loop.index0 %}
-	      {% include 'include/destination.jinja2' %}
-	    {% endfor %}
-	  {% endif %}
-	</div>
-	<div class="text-right">
-	  <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
-	  <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="text-main flaticon-more"></i></a>
-	  {% if itinerary %}
-	  {% else %}
-	  <button type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
-	  {% endif %}
-	  <!-- TODO -->
-	  <!-- jquery on click: -->
-	  <!-- if save, call ajax form /ajax/save and refresh map -->
-	  <!-- if search, just refresh map -->
-	</div>
-	<div id="more" class="collapse text-right">
-	  <br>
-	  {% if itinerary %}
-	  {% set url = '/itinerary/' + itinerary.id|string %}
-	  {% set btntype = 'main' %}
-	  {% include 'include/shareButtons.jinja2' %}
-	  {% if itinerary.favorite %}
-	  <a href="#favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</a>
-	  {% else %}
-	  <a href="#removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Remove</a>
-	  {% endif %}
-	  <button type="submit" class="btn btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
-	  {% else %}
-	  <input type="text" class="form-control search" placeholder="Itinerary name" name="name">
-	  <button type="submit" class="btn btn-main" name="save"><i class="flaticon-star"></i> Save this itinerary</button>
-	  {% endif %}
-	</div>
-      </form>
+<div id="searchbox">
+  <!-- Template filled in JQuery -->
+  <div id="destination-template" class="hidden">
+    {% set index=0 %}
+    {% include 'include/destination.jinja2' %}
+  </div> <!-- template -->
+  <form method="POST" id="searchform">
+    {% if itinerary %}
+    <h2 id="itinerary" data-id="{{ itinerary.id }}"
+	class="text-main"><i class="flaticon-itinerary"></i>
+      {% if itinerary.name %}
+      {{ itinerary.name }}
+      {% else %}
+      Your Itinerary
+      {% endif %}
+    </h2>
+    {% endif %}
+    <div id="departure" class="row">
+      <div class="col-xs-12">
+	<input type="text" class="form-control search" placeholder="Departure" name="departure"{% if itinerary %} value="{% set coordinate=itinerary.departure %}{% include 'include/coordinate.jinja2' %}{% set coordinate=None %}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
+      </div>
+      <div class="col-xs-2" style="display: none;">
+	<a class="btn btn-main edit-destination" href="#editDeparture">
+	  <i class="flaticon-cursor"></i>
+	</a>
+      </div>
     </div>
+    <div id="destinations">
+      {% if not itinerary or not itinerary.destinations %}
+      {% set index=0 %}
+      {% include 'include/destination.jinja2' %}
+      {% elif itinerary %}
+      {% for coordinate in itinerary.destinations %}
+      {% set index=loop.index0 %}
+      {% include 'include/destination.jinja2' %}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </form>
+  <div class="text-right">
+    <a href="#addDestination" class="btn btn-link"><i class="flaticon-addpin"></i> Add destination</a>
+    <a href="#more" class="btn btn-link" data-toggle="collapse"><i class="text-main flaticon-more"></i></a>
+    {% if not itinerary %}
+    <button name="search" type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
+    {% endif %}
+  </div>
+  <form id="more" class="collapse text-right">
+    <br>
+    {% if itinerary %}
+    {% if itinerary.favorite %}
+    <input type="text" class="form-control search" placeholder="Change itinerary name" name="name">
+    {% endif %}
+    {% set url = '/itinerary/' + itinerary.id|string %}
+    {% set btntype = 'main' %}
+    {% include 'include/shareButtons.jinja2' %}
+    {% if itinerary.favorite %}
+    <button type="submit" value="removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Un-fav</button>
+    {% else %}
+    <button type="submit" value="favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</button>
+    {% endif %}
+    <button type="submit" class="btn btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
+    {% endif %}
+  </form>
+</div>
 {% endblock %}
