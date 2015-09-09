@@ -29,10 +29,15 @@
       {% if itinerary.name %}
       {{ itinerary.name }}
       {% else %}
+      {% if not itinerary.owner or username == itinerary.owner %}
       Your Itinerary
+      {% else %}
+      An Itinerary
+      {% endif %}
       {% endif %}
     </h2>
     {% endif %}
+    {% if not itinerary.owner or username == itinerary.owner %}
     <div id="departure" class="row">
       <div class="col-xs-12">
 	<input type="text" class="form-control search" placeholder="Departure" name="departure"{% if itinerary %} value="{% set coordinate=itinerary.departure %}{% include 'include/coordinate.jinja2' %}{% set coordinate=None %}"{% elif 'departure' in request.POST %} value="{{ request.POST['departure'] }}"{% endif %}>
@@ -70,7 +75,9 @@
     <div class="row">
       <div class="col-xs-10">
 	{% endif %}
+	{% if authentified %}
 	<input type="text" class="form-control search" placeholder="Change itinerary name" name="name" value="{% if itinerary.name %}{{ itinerary.name }}{% endif %}">
+	{% endif %}
 	{% if itinerary.favorite %}
       </div>
       <div class="col-xs-2">
@@ -83,13 +90,73 @@
     {% set url = '/itinerary/' + itinerary.id|string %}
     {% set btntype = 'main' %}
     {% include 'include/shareButtons.jinja2' %}
+    {% if authentified %}
     <button type="submit" class="btn btn-sm btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
+    {% endif %}
     {% if itinerary.favorite %}
     <button type="submit" name="removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Un-fav</button>
     {% else %}
+    {% if authentified %}
     <button type="submit" name="favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</button>
     {% endif %}
     {% endif %}
+    {% endif %}
+    {% else %}
+    {% if itinerary.owner %}
+    <h3 style="margin-top: -10px" class="text-right text-secondary">by {{ itinerary.owner }}</h3>
+    {% endif %}
+    <dl>
+      {% if itinerary.destinations %}
+      <dt class="text-main"><h4>From</h4></dt>
+      {% endif %}
+      <dd>
+	<div class="row">
+	  <div class="col-xs-2">
+	    <img src="/static/departure.png">
+	  </div>
+	  <div class="col-xs-10">
+	    {% set coordinate=itinerary.departure %}
+	    {% include 'include/coordinate.jinja2' %}
+	  </div>
+	</div>
+      </dd>
+    </dl>
+    {% if itinerary.destinations %}
+    <dl>
+      <dt class="text-main"><h4>To</h4></dt>
+      <dd>
+	<div class="row">
+	  <div class="col-xs-2">
+	    <img src="/static/arrival.png">
+	  </div>
+	  <div class="col-xs-10">
+	    {% if itinerary.destinations|length > 1 %}
+	    <ol>
+	      {% endif %}
+	      {% for destination in itinerary.destinations %}
+	      {% if itinerary.destinations|length > 1 %}
+	      <li>
+		{% endif %}
+		{% set coordinate=destination %}
+		{% include 'include/coordinate.jinja2' %}
+		{% if itinerary.destinations|length > 1 %}
+	      </li>
+	      {% endif %}
+	      {% endfor %}
+	      {% if itinerary.destinations|length > 1 %}
+	    </ol>
+	    {% endif %}
+	  </div>
+	</div>
+      </dd>
+    </dl>
+    {% endif %}
+    <div class="text-right">
+      {% set btntype = 'main' %}
+      {% set url = '/itinerary/' + itinerary.id|string %}
+      {% include 'include/shareButtons.jinja2' %}
+      {% endif %}
+    </div>
   </form>
 </div>
 {% endblock %}

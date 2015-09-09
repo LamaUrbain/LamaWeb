@@ -10,6 +10,7 @@ def globalContext(request):
         'apiurl': pyramid.threadlocal.get_current_registry().settings['apiurl'],
         'authentified': True if 'auth_token' in request.session else False,
         'user': request.session['auth_user'] if 'auth_user' in request.session else None,
+        'username': request.session['auth_user']['username'] if 'auth_user' in request.session else None,
     }
 
 @view_config(context=Exception)
