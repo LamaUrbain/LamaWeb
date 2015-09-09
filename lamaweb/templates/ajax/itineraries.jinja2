@@ -22,10 +22,22 @@ Your Itineraries{% endblock %}
       {% include '../include/coordinate.jinja2' %}
     </td>
     <td>
-      {% for destination in itinerary.destinations %}
-      {% set coordinate=destination %}
-      {% include '../include/coordinate.jinja2' %}
-      {% endfor %}
+      {% if itinerary.destinations|length > 1 %}
+      <ol>
+	{% endif %}
+	{% for destination in itinerary.destinations %}
+	{% set coordinate=destination %}
+	{% if itinerary.destinations|length > 1 %}
+	<li>
+	  {% endif %}
+	  {% include '../include/coordinate.jinja2' %}
+	  {% if itinerary.destinations|length > 1 %}
+	</li>
+	{% endif %}
+	{% endfor %}
+	{% if itinerary.destinations|length > 1 %}
+	<ol>
+	  {% endif %}
     </td>
     <td>
       <form method="POST" action="/ajax/form/deleteitinerary">
