@@ -1,6 +1,10 @@
 var map = 0;
 var mapView = 0;
 
+function genericAjaxError(xhr, status, error) {
+    alert(eval("(" + xhr.responseText + ")").error);
+}
+
 function modal(url, size) {
     size = (typeof size == 'undefined' ? '' : size);
     var dialog = $('#modal .modal-dialog').removeClass().addClass('modal-dialog');
