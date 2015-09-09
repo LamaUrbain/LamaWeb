@@ -17,20 +17,31 @@ class ApiRequest(object):
         self.session = requests.Session()
 
     def r(self, response):
+        print 'response: ',
+        print response.text
         if response.status_code == 200:
             return response
         raise ApiError('Error %d %s' % (response.status_code, response.text))
 
     def get(self, path, *args, **kwargs):
+        print 'GET ' + self.api_url + path
         return self.r(self.session.get(self.api_url + path, **kwargs))
 
     def post(self, path, *args, **kwargs):
-        return self.r(self.session.post(self.api_url + path, **kwargs))
+        print '------- request'
+        print 'POST ' + self.api_url + path
+        print 'params: ',
+        print kwargs.get('data', None)
+        r = self.r(self.session.post(self.api_url + path, **kwargs))
+        print '/----'
+        return r
 
     def put(self, path, *args, **kwargs):
+        print 'PUT ' + self.api_url + path
         return self.r(self.session.put(self.api_url + path, **kwargs))
 
     def delete(self, path, *args, **kwargs):
+        print 'DELETE ' + self.api_url + path
         return self.r(self.session.delete(self.api_url + path, **kwargs))
 
 ###############################################################################
@@ -52,12 +63,11 @@ def isLatLong(string):
 
 def prepareParams(request, params={}, token=False):
     if token and 'auth_token' in request.session:
-        params['token'] = request.session['auth_token']
+        params['token'] = str(request.session['auth_token'])
     if 'departure' in params and params['departure'] and not isLatLong(params['departure']):
         params['departure'], params['departure_address'] = geocode(params['departure'])
     if 'destination' in params and params['destination'] and not isLatLong(params['destination']):
         params['destination'], params['destination_address'] = geocode(params['destination'])
-    print params
     return params
 
 ###############################################################################
@@ -70,7 +80,7 @@ def getItinerary(request, id):
     return ApiRequest().get('/itineraries/' + str(id), params=prepareParams(request)).json()
 
 def createItinerary(request, departure, name=None, destination=None, favorite=None):
-    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite}, token=True)).json()
+    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'name': name, 'departure': departure, 'destination': destination, 'favorite': favorite, 'token': 'trszxtdNAPdemekmwYsnFNZKopKOwGKK'}, token=True)).json()
 
 def editItinerary(request, itinerary, departure=None, name=None, favorite=None):
     return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite}, token=True)).json()
