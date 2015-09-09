@@ -24,8 +24,14 @@ class ApiRequest(object):
         raise ApiError('Error %d %s' % (response.status_code, response.text))
 
     def get(self, path, *args, **kwargs):
+        print '------- request'
         print 'GET ' + self.api_url + path
-        return self.r(self.session.get(self.api_url + path, **kwargs))
+        print 'params: ',
+        print kwargs.get('params', None)
+        print 'GET ' + self.api_url + path
+        r = self.r(self.session.get(self.api_url + path, **kwargs))
+        print '/----'
+        return r
 
     def post(self, path, *args, **kwargs):
         print '------- request'
@@ -37,8 +43,14 @@ class ApiRequest(object):
         return r
 
     def put(self, path, *args, **kwargs):
+        print '------- request'
         print 'PUT ' + self.api_url + path
-        return self.r(self.session.put(self.api_url + path, **kwargs))
+        print 'params: ',
+        print kwargs.get('params', None)
+        print 'PUT ' + self.api_url + path
+        r = self.r(self.session.put(self.api_url + path, **kwargs))
+        print '/----'
+        return r
 
     def delete(self, path, *args, **kwargs):
         print 'DELETE ' + self.api_url + path
@@ -73,14 +85,14 @@ def prepareParams(request, params={}, token=False):
 ###############################################################################
 # Itineraries Endpoint
 
-def getItineraries(request, username):
-    return ApiRequest().get('/itineraries/', params=prepareParams(request, {'owner': username})).json()
+def getItineraries(request, username, favorite=None):
+    return ApiRequest().get('/itineraries/', params=prepareParams(request, {'owner': username, 'favorite': favorite})).json()
 
 def getItinerary(request, id):
     return ApiRequest().get('/itineraries/' + str(id), params=prepareParams(request)).json()
 
 def createItinerary(request, departure, destination=None):
-    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'departure': departure, 'destination': destination, 'token': 'trszxtdNAPdemekmwYsnFNZKopKOwGKK'}, token=True)).json()
+    return ApiRequest().post('/itineraries/', data=prepareParams(request, {'departure': departure, 'destination': destination}, token=True)).json()
 
 def editItinerary(request, itinerary, departure=None, name=None, favorite=None):
     return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite}, token=True)).json()
