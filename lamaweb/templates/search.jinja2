@@ -63,21 +63,32 @@
     <button name="search" type="submit" class="btn btn-secondary submit"><i class="flaticon-search"></i> Search</button>
     {% endif %}
   </div>
-  <form id="more" class="collapse text-right">
+  <form id="more" class="collapse text-right" method="post">
     <br>
     {% if itinerary %}
     {% if itinerary.favorite %}
-    <input type="text" class="form-control search" placeholder="Change itinerary name" name="name">
+    <div class="row">
+      <div class="col-xs-10">
+	{% endif %}
+	<input type="text" class="form-control search" placeholder="Change itinerary name" name="name" value="{% if itinerary.name %}{{ itinerary.name }}{% endif %}">
+	{% if itinerary.favorite %}
+      </div>
+      <div class="col-xs-2">
+	<button type="submit" class="btn btn-main edit-name">
+	  <i class="flaticon-cursor"></i>
+	</button>
+      </div>
+    </div>
     {% endif %}
     {% set url = '/itinerary/' + itinerary.id|string %}
     {% set btntype = 'main' %}
     {% include 'include/shareButtons.jinja2' %}
+    <button type="submit" class="btn btn-sm btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
     {% if itinerary.favorite %}
-    <button type="submit" value="removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Un-fav</button>
+    <button type="submit" name="removefavorite" class="btn btn-danger"><i class="flaticon-star"></i> Un-fav</button>
     {% else %}
-    <button type="submit" value="favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</button>
+    <button type="submit" name="favorite" class="btn btn-secondary"><i class="flaticon-star"></i> Favorite</button>
     {% endif %}
-    <button type="submit" class="btn btn-danger" name="delete"><i class="flaticon-delete"></i> Delete</button>
     {% endif %}
   </form>
 </div>
