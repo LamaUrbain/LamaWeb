@@ -90,6 +90,25 @@ def ajaxPrivacy(request):
 def ajaxTerms(request):
     return globalContext(request)
 
+@view_config(route_name='ajaxSponsors', renderer='templates/ajax/users.jinja2')
+def ajaxSponsors(request):
+    context = globalContext(request)
+    context['title'] = 'Lama Urbain Sponsors'
+    context['flaticon'] = 'flag'
+    context['users'] = api.getUsers(request, sponsored=True)
+    return context
+
+@view_config(route_name='ajaxUser', renderer='templates/ajax/itineraries.jinja2')
+def ajaxUser(request):
+    username = request.matchdict.get("username", None)
+    if not username:
+        request.response.status = 400
+        return { 'error': 'Invalid User' }
+    context = globalContext(request)
+    context['user'] = api.getUser(request, username=username)
+    context['itineraries'] = api.getItineraries(request, username=username, favorite=True)
+    return context
+
 @view_config(route_name='ajaxSettings', renderer='templates/ajax/settings.jinja2')
 def ajaxSettings(request):
     return globalContext(request)

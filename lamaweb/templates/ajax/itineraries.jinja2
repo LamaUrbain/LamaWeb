@@ -1,7 +1,15 @@
 {% extends 'base.jinja2' %}
 {% block title %}
+{% if user %}
+<h3>
+  <img src="{{ user.avatar }}" width="45" class="img-rounded" alt="{{ user.username }}" />
+  {{ user.username }}
+</h3>
+{% else %}
 <i class="flaticon-{% if history %}itinerary{% else %}star{% endif %}"></i>
-{% if history %}Your History{% else %}Your Favorites{% endif %}{% endblock %}
+{% if history %}Your History{% else %}Your Favorites{% endif %}
+{% endif %}
+{% endblock %}
 {% block body %}
 <table class="table table-bordered table-striped">
   <tr>
@@ -46,12 +54,14 @@
     <td>
       <form method="POST" action="/ajax/form/deleteitinerary">
 	<input type="hidden" name="itinerary" value="{{ itinerary.id }}">
-	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See & {% if history %}Save{% else %}Edit{% endif %} itinerary" target="_blank" class="btn btn-link">
+	<a href="/itinerary/{{ itinerary.id }}" data-toggle="tooltip" data-placement="top" title="See{% if not user %} & {% if history %}Save{% else %}Edit{% endif %}{% endif %} itinerary" target="_blank" class="btn btn-link">
 	  <i class="flaticon-itinerary"></i>
 	</a>
+	{% if not user %}
 	<button type="submit" name="deleteItinerary" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Delete this {% if history %}from your history{% else %}itinerary{% endif %}">
 	  <i class="flaticon-delete"></i>
 	</button>
+	{% endif %}
 	{% if not history %}
 	{% set url="/itinerary/" + itinerary.id|string %}
 	{% include '../include/shareButtons.jinja2' %}
@@ -63,4 +73,11 @@
 </table>
 <script src="/static/js/itineraries.js"></script>
 {% endblock %}
-{% block footer %}{% endblock %}
+{% block footer %}
+{% if user %}
+<a href="#sponsors" data-toggle="ajaxmodal" class="btn btn-link" data-size="lg">
+  <i class="flaticon-leftarrow"></i>
+  Back to sponsors
+</a>
+{% endif %}
+{% endblock %}

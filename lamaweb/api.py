@@ -124,6 +124,12 @@ def getUser(request, username):
     user['avatar'] = getGravatar(user['email'])
     return user
 
+def getUsers(request, search=None, sponsored=None):
+    users = ApiRequest().get('/users/', params=prepareParams(request, {'search': search, 'sponsored': sponsored})).json()
+    for user in users:
+        user['avatar'] = getGravatar(user['email'])
+    return users
+
 def createUser(request, username, password, email):
     user = ApiRequest().post('/users/', data=prepareParams(request, {'username': username, 'password': password, 'email': email})).json()
     user['avatar'] = getGravatar(user['email'])

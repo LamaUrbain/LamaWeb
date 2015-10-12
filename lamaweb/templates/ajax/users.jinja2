@@ -1,0 +1,28 @@
+{% extends 'base.jinja2' %}
+{% block title %}
+<i class="flaticon-{% if flaticon %}{{ flaticon }}{% else %}defaultavatar{% endif %}"></i>
+{% if title %}{{ title }}{% else %}Users{% endif %}
+{% endblock %}
+{% block body %}
+
+<div class="row">
+  {% for user in users %}
+  {% if (loop.index0 % 3) == 0 %}
+</div>
+<div class="row">
+  {% endif %}
+  <div class="col-md-4">
+    <a href="#user/{{ user.username }}" data-toggle="ajaxmodal" class="btn btn-block btn-link btn-lg" data-size="lg">
+      <img src="{{ user.avatar }}" class="img-responsive img-rounded" alt="avatar" style="margin: auto;"><br>
+      {{ user.username }}
+    </a><br>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+{% block footer %}
+<a href="http://eip.epitech.eu/2016/lamaurbain/#contact" target="_blank" class="btn btn-main btn-lg">
+  <i class="flaticon-flag"></i>
+  Become a sponsor
+</a>
+{% endblock %}

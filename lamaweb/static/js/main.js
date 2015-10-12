@@ -5,8 +5,9 @@ function genericAjaxError(xhr, status, error) {
     alert(eval("(" + xhr.responseText + ")").error);
 }
 
-function modal(url, size) {
+function modal(url, size, silent) {
     size = (typeof size == 'undefined' ? '' : size);
+    silent = (typeof silent == 'undefined' ? false : silent);
     var dialog = $('#modal .modal-dialog').removeClass().addClass('modal-dialog');
     if (size != '')
 	dialog.addClass('modal-' + size);
@@ -15,7 +16,9 @@ function modal(url, size) {
 	$('#modal').modal('show');
 	modalHandler();
     }).fail(function() {
-	alert('A gigantic internet monster destroyed everything. Please try again.');
+	if (!silent) {
+	    alert('A gigantic internet monster destroyed everything. Please try again.');
+	}
     });
 }
 
@@ -162,9 +165,11 @@ $(window).resize(function() {
 modalHandler();
 var hash = window.location.hash.substring(1);
 if (hash != '') {
-    var a = $('#navbar-toggler a[href=#' + hash + ']');
+    var a = $('#navbar-toggler a[href="#' + hash + '"]');
     if (a.length > 0) {
 	modal(hash, a.attr('data-size'));
+    } else {
+	modal(hash, 'lg', true);
     }
 }
 mapHandler();

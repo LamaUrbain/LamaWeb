@@ -21,6 +21,8 @@ def main(global_config, **settings):
     config.add_route('ajaxAbout', '/ajax/about')
     config.add_route('ajaxPrivacy', '/ajax/privacy')
     config.add_route('ajaxTerms', '/ajax/terms')
+    config.add_route('ajaxSponsors', '/ajax/sponsors')
+    config.add_route('ajaxUser', '/ajax/user/{username}')
     config.add_route('ajaxSettings', '/ajax/settings')
     config.add_route('ajaxProfile', '/ajax/profile')
     config.add_route('ajaxItineraries', '/ajax/itineraries')
