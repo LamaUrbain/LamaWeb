@@ -175,14 +175,16 @@ def logout(request):
     # redirect to /
     return HTTPFound(location='/')
 
-@view_config(route_name='ajaxFormSettings')
+@view_config(route_name='ajaxFormSettings', renderer='json')
 def ajaxFormSettings(request):
-    # TODO
-    # call api to save settings
-    # called on click save on settings modal
-    # handled by jquery on settings.js
-    # return empty on OK response
-    return globalContext(request)
+    if ('password' in request.POST and request.POST['password']) or ('email' in request.POST and request.POST['email']):
+        user = api.editUser(request, request.session['auth_user']['username'],
+                            password=request.POST.get('password', None),
+                            email=request.POST.get('email', None))
+        request.session['auth_user'] = user
+        return {}
+    request.response.status = 400
+    return { 'error': 'Missing password or email' }
 
 @view_config(route_name='ajaxFormSignup')
 def ajaxFormSignup(request):

@@ -3,7 +3,7 @@
 <i class="flaticon-settings"></i>
 Your Settings{% endblock %}
 {% block body %}
-<form class="form-horizontal" action="/ajax/form/settings" method="POST">
+<form id="settingsform" class="form-horizontal" action="/ajax/form/settings" method="POST">
   <h4>Personal Information</h4>
   <div class="form-group">
     <label for="inputEmail" class="col-sm-4 control-label">Change your email</label>
@@ -18,62 +18,62 @@ Your Settings{% endblock %}
       <input type="password" class="form-control" id="inputPassword" placeholder="New password" name="password">
     </div>
   </div>
-  <h4>Preferences</h4>
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-	<label>
-	  <input type="checkbox" name="inputWalk">
-	  <i class="flaticon-walk"></i>
-	  You can walk
-	</label>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-	<label>
-	  <input type="checkbox" name="inputBicycle">
-	  <i class="flaticon-bicycle"></i>
-	  You can bicycle
-	</label>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-	<label>
-	  <input type="checkbox" name="inputCar">
-	  <i class="flaticon-bus"></i>
-	  You can drive a car
-	</label>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-	<label>
-	  <input type="checkbox" name="inputBus">
-	  <i class="flaticon-tram"></i>
-	  You can take public transportations <small class="text-muted">(RATP)</small>
-	</label>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-4 col-sm-8">
-      <div class="checkbox">
-	<label>
-	  <input type="checkbox" name="inputTrain">
-	  <i class="flaticon-subway"></i>
-	  You can take the train <small class="text-muted">(SNCF)</small>
-	</label>
-      </div>
-    </div>
-  </div>
+  <!-- <h4>Preferences</h4> -->
+  <!-- <div class="form-group"> -->
+  <!--   <div class="col-sm-offset-4 col-sm-8"> -->
+  <!--     <div class="checkbox"> -->
+  <!-- 	<label> -->
+  <!-- 	  <input type="checkbox" name="inputWalk"> -->
+  <!-- 	  <i class="flaticon-walk"></i> -->
+  <!-- 	  You can walk -->
+  <!-- 	</label> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- <div class="form-group"> -->
+  <!--   <div class="col-sm-offset-4 col-sm-8"> -->
+  <!--     <div class="checkbox"> -->
+  <!-- 	<label> -->
+  <!-- 	  <input type="checkbox" name="inputBicycle"> -->
+  <!-- 	  <i class="flaticon-bicycle"></i> -->
+  <!-- 	  You can bicycle -->
+  <!-- 	</label> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- <div class="form-group"> -->
+  <!--   <div class="col-sm-offset-4 col-sm-8"> -->
+  <!--     <div class="checkbox"> -->
+  <!-- 	<label> -->
+  <!-- 	  <input type="checkbox" name="inputCar"> -->
+  <!-- 	  <i class="flaticon-bus"></i> -->
+  <!-- 	  You can drive a car -->
+  <!-- 	</label> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- <div class="form-group"> -->
+  <!--   <div class="col-sm-offset-4 col-sm-8"> -->
+  <!--     <div class="checkbox"> -->
+  <!-- 	<label> -->
+  <!-- 	  <input type="checkbox" name="inputBus"> -->
+  <!-- 	  <i class="flaticon-tram"></i> -->
+  <!-- 	  You can take public transportations <small class="text-muted">(RATP)</small> -->
+  <!-- 	</label> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- <div class="form-group"> -->
+  <!--   <div class="col-sm-offset-4 col-sm-8"> -->
+  <!--     <div class="checkbox"> -->
+  <!-- 	<label> -->
+  <!-- 	  <input type="checkbox" name="inputTrain"> -->
+  <!-- 	  <i class="flaticon-subway"></i> -->
+  <!-- 	  You can take the train <small class="text-muted">(SNCF)</small> -->
+  <!-- 	</label> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
   <div class="form-group text-right">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-main">Save your settings</button>
