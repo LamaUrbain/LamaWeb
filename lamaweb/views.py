@@ -95,7 +95,7 @@ def ajaxSponsors(request):
     context = globalContext(request)
     context['title'] = 'Lama Urbain Sponsors'
     context['flaticon'] = 'flag'
-    context['users'] = api.getUsers(request, sponsored=True)
+    context['users'] = api.getUsers(request, sponsored='true')
     return context
 
 @view_config(route_name='ajaxUser', renderer='templates/ajax/itineraries.jinja2')
