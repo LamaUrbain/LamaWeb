@@ -106,7 +106,7 @@ def ajaxUser(request):
         return { 'error': 'Invalid User' }
     context = globalContext(request)
     context['user'] = api.getUser(request, username=username)
-    context['itineraries'] = api.getItineraries(request, username=username, favorite=True)
+    context['itineraries'] = api.getItineraries(request, username=username, favorite='true')
     return context
 
 @view_config(route_name='ajaxSettings', renderer='templates/ajax/settings.jinja2')
@@ -120,7 +120,7 @@ def ajaxProfile(request):
 @view_config(route_name='ajaxItineraries', renderer='templates/ajax/itineraries.jinja2')
 def ajaxItineraries(request):
     # search itineraries that are favorited by the user
-    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'], favorite=True)
+    itineraries = api.getItineraries(request, username=request.session['auth_user']['username'], favorite='true')
     return { 'itineraries': itineraries }
 
 @view_config(route_name='ajaxHistory', renderer='templates/ajax/itineraries.jinja2')
