@@ -5,11 +5,7 @@ function newDestinationElement(index) {
     input.attr('name', 'destination-' + index);
     input.attr('data-index', index);
     if (typeof itinerary != 'undefined' && typeof itinerary.destinations[index] != 'undefined') {
-	if (itinerary.destinations[index].address) {
-	    input.val(itinerary.destinations[index].address);
-	} else if (itinerary.destinations[index].latitude) {
-	    input.val(itinerary.destinations[index].latitude + ',' + itinerary.destinations[index].longitude);
-	}
+	input.val(coordinateToString(itinerary.destinations[index]));
     }
     input.attr('data-old-destination', input.val());
     $("#destinations").append(newTemplate);
@@ -25,6 +21,8 @@ function reloadDestinations() {
 }
 
 function reloadMapIcons() {
+    // remove incidents to avoid wrong extent
+    removeLayer('Incidents');
     // reload itinerary
     removeLayer('Itinerary');
     map.addLayer(itineraryLayer());
@@ -33,6 +31,8 @@ function reloadMapIcons() {
     map.addLayer(iconsLayer());
     // zoom, center
     fitExtent();
+    // re-display incidents
+    map.addLayer(incidentsLayer());
 }
 
 function reloadDestinationsAndMap(new_itinerary) {
@@ -138,11 +138,7 @@ $(document).ready(function() {
 		    },
 		    success: function(new_itinerary) {
 			itinerary = new_itinerary;
-			if (itinerary.departure.address) {
-			    input.val(itinerary.departure.address);
-			} else if (itinerary.departure.latitude) {
-			    input.val(itinerary.departure.latitude + ',' + itinerary.departure.longitude);
-			}
+			input.val(coordinateToString(itinerary.departure));
 			resetDeparture();
 			reloadMapIcons();
 		    },

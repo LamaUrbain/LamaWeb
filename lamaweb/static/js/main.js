@@ -1,5 +1,7 @@
 var map = 0;
 var mapView = 0;
+var popup = 0;
+var incidents = 0;
 
 function genericAjaxError(xhr, status, error) {
     alert(eval("(" + xhr.responseText + ")").error);
@@ -34,11 +36,20 @@ function heightHandler() {
     $('nav').css('height', $(window).height());
 }
 
-function coordinateToIcon(coordinate, png) {
+function coordinateToString(coordinate) {
+    if (coordinate.address) {
+	return coordinate.address;
+    }
+    return coordinate.latitude + ',' + coordinate.longitude;
+}
+
+function coordinateToIcon(coordinate, png, extraData) {
     var lonlat = ol.proj.fromLonLat([coordinate.longitude, coordinate.latitude]);
     var iconFeature = new ol.Feature({
 	geometry: new ol.geom.Point(lonlat),
 	name: coordinate.address,
+	coordinateObject: coordinate,
+	extraData: extraData,
     });
     var iconStyle = new ol.style.Style({
 	image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -121,6 +132,61 @@ function fitExtent() {
     }
 }
 
+function incidentsLayer() {
+    var incident, icons = [];
+    for (idx in incidents) {
+	incident = incidents[idx];
+	icons.push(coordinateToIcon(incident['position'], '/static/incident.png', incident))
+    }
+    var incidentsVector = new ol.source.Vector({
+	features: icons
+    });
+    var incidentsLayer = new ol.layer.Vector({
+	source: incidentsVector,
+	name: 'Incidents'
+    });
+    return incidentsLayer;
+}
+
+function getIncidents() {
+    $.get(apiurl + '/incidents', function(data) {
+	incidents = data;
+	map.addLayer(incidentsLayer());
+    });
+}
+
+function initPopup() {
+    var element = $('#popup');
+    popup = new ol.Overlay({
+	element: element,
+	positioning: 'bottom-center',
+	stopEvent: false
+    });
+    map.addOverlay(popup);
+    var element = $('#popup')
+    map.on('click', function(evt) {
+	var feature = map.forEachFeatureAtPixel(evt.pixel,
+						function(feature, layer) {
+						    return feature;
+						});
+	if (feature && typeof(feature.get('extraData')) != 'undefined') {
+	    popup.setPosition(evt.coordinate);
+	    element.popover({
+		'placement': 'top',
+		'html': true,
+		'container': $('#map'),
+		'title': feature.get('extraData')['name'],
+		'content': (feature.get('extraData')['end'] != null ?
+			    'Ends: ' + feature.get('extraData')['end'] + '<br>' : '')
+		    + coordinateToString(feature.get('coordinateObject')),
+	    });
+	    element.popover('show');
+	} else {
+	    element.popover('destroy');
+	}
+    });
+}
+
 function itineraryLayer () {
     var itineraryLayerSource = new ol.source.XYZ({
 	url: apiurl + '/itineraries/' + itinerary.id + '/tiles/{z}/{x}/{y}' + '?time=' + new Date().getTime(),
@@ -153,7 +219,10 @@ function mapHandler() {
 	layers: layers,
 	view: mapView
     });
+    initPopup();
     fitExtent();
+    // called after extent to avoid wrong extent
+    getIncidents();
     return [map, mapView];
 }
 
