@@ -185,6 +185,21 @@ function initPopup() {
 	    element.popover('destroy');
 	}
     });
+    map.getViewport().addEventListener('contextmenu', function (e) {
+	e.preventDefault();
+	var coordinate = map.getEventCoordinate(e);
+	var lonlat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+	popup.setPosition(coordinate);
+	$('#reportform-wrapper input[name=position]').val(lonlat[1] + ',' + lonlat[0]);
+	element.popover({
+	    'placement': 'top',
+	    'html': true,
+	    'container': $('#map'),
+	    'title': 'Report incident here',
+	    'content': $('#reportform-wrapper').html(),
+	});
+	element.popover('show');
+    });
 }
 
 function itineraryLayer () {

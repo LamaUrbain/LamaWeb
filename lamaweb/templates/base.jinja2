@@ -126,6 +126,23 @@
       </div>
     </div>
 
+    <div id="reportform-wrapper">
+      <form action="/ajax/form/report" method="POST">
+	<input type="hidden" name="position" />
+	<div class="form-group">
+	  <label for="inputName" class="control-label">Short description of the incident</label>
+	  <textarea class="form-control" id="inputOldPassword" placeholder="Example: Road closed for constructions, Radar, ..." name="name" required></textarea><br>
+	</div>
+	<div class="form-group">
+	  <label for="inputEnd" class="control-label">End of the incident (optional)</label>
+	  <input type="datetime-local" name="end" class="form-control">
+	</div>
+	<div class="form-group text-right">
+	  <button type="submit" class="btn btn-danger">Report incident</button>
+	</div>
+      </form>
+    </div>
+
     <script>
       var apiurl = '{{ apiurl }}';
     </script>

@@ -35,6 +35,7 @@ def main(global_config, **settings):
 
     # Forms
     config.add_route('ajaxFormSave', '/ajax/form/save')
+    config.add_route('ajaxFormReport', '/ajax/form/report')
     config.add_route('ajaxFormSettings', '/ajax/form/settings')
     config.add_route('ajaxFormDelete', '/ajax/form/delete')
     config.add_route('ajaxFormLogin', '/ajax/form/login')

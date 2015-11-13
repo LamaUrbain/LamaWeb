@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render_to_response
 import json
 import api
+import datetime
 
 def globalContext(request):
     return {
@@ -162,6 +163,17 @@ def ajaxFormLogin(request):
         request.session['auth_user'] = user
     # redirect to /
     return HTTPFound(location='/#profile')
+
+@view_config(route_name='ajaxFormReport')
+def ajaxFormReport(request):
+    if 'name' in request.POST and request.POST['name']:
+        end = request.POST.get('end', None)
+        if end is not None and end == '':
+            end = None
+        if end is not None:
+            end = datetime.datetime.strptime(end, '%Y-%m-%dT%H:%M').strftime('%Y-%m-%d %H:%M:%S')
+        api.reportIncident(request, name=request.POST['name'], position=request.POST['position'], end=end)
+    return HTTPFound(location='/?thanksreport')
 
 @view_config(route_name='logout')
 def logout(request):

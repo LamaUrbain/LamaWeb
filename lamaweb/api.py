@@ -152,3 +152,9 @@ def authenticate(request, username, password):
 def logout(request):
     if 'auth_token' in request.session:
         ApiRequest().delete('/sessions/' + request.session['auth_token'], params=prepareParams(request))
+
+###############################################################################
+# Incidents Endpoint
+
+def reportIncident(request, name, position, end=None):
+    return ApiRequest().post('/incidents', data=prepareParams(request, {'name': name, 'end': end, 'position': position}))
