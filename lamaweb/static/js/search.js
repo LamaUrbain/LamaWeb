@@ -17,7 +17,7 @@ function reloadDestinations() {
 	$("#destinations").append(newDestinationElement(i));
     }
     destinationsHandler();
-    $('a[href=#addDestination]').show();
+    $('a[href="#addDestination"]').show();
 }
 
 function reloadMapIcons() {
@@ -42,7 +42,7 @@ function reloadDestinationsAndMap(new_itinerary) {
 }
 
 function deleteHandler() {
-    $('a[href=#deleteDestination]').click(function(e) {
+    $('a[href="#deleteDestination"]').click(function(e) {
 	e.preventDefault();
 	var deleteButton = $(this);
 	if (deleteButton.closest('.destination').find('input').val() == "") {
@@ -67,9 +67,9 @@ function editHandler() {
     $('#destinations .destination input').focus(function(e) {
 	$('#destinations .delete-destination').hide();
 	$(this).closest('.destination').find('.edit-destination').show();
-	$('a[href=#addDestination]').hide();
+	$('a[href="#addDestination"]').hide();
     });
-    $('a[href=#editDestination]').click(function(e) {
+    $('a[href="#editDestination"]').click(function(e) {
 	var editButton = $(this);
 	var destinationBar = $(this).closest('.destination');
 	var input = destinationBar.find('input');
@@ -124,7 +124,7 @@ $(document).ready(function() {
 
 	$('#departure input').attr('data-old-destination', $('#departure input').val());
 
-	$('a[href=#editDeparture]').click(function(e) {
+	$('a[href="#editDeparture"]').click(function(e) {
 	    var input = $('#departure input');
 	    if (input.val() == input.attr('data-old-destination')) {
 		resetDeparture();
@@ -150,7 +150,7 @@ $(document).ready(function() {
 	    }
 	});
 
-	$('a[href=#editVehicle]').click(function(e) {
+	$('a[href="#editVehicle"]').click(function(e) {
 	    e.preventDefault();
 	    var selected_vehicle = $('select[name=vehicle]').val();
 	    if (selected_vehicle != parseInt(itinerary.vehicle)) {
@@ -175,7 +175,7 @@ $(document).ready(function() {
 	    return false;
 	});
 
-	$('a[href=#addDestination]').click(function(e) {
+	$('a[href="#addDestination"]').click(function(e) {
 	    e.preventDefault();
 	    var lastIndex = $('#destinations').find('.destination').last().find('input').attr('data-index');
 	    $('#destinations').append(newDestinationElement(parseInt(lastIndex) + 1));
@@ -189,7 +189,7 @@ $(document).ready(function() {
 	    e.preventDefault();
 	    $('#searchform').submit();
 	});
-	$('a[href=#addDestination]').click(function(e) {
+	$('a[href="#addDestination"]').click(function(e) {
 	    e.preventDefault();
 	    var lastIndex = $('#destinations').find('.destination').last().find('input').attr('data-index');
 	    $('#destinations').append(newDestinationElement(parseInt(lastIndex) + 1));
