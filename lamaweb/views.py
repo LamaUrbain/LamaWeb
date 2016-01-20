@@ -230,6 +230,16 @@ def ajaxFormEditDestination(request):
     request.response.status = 400
     return { 'error': 'Missing parameter' }
 
+
+@view_config(route_name='ajaxEditVehicle', renderer='json')
+def ajaxFormEditVehicle(request):
+    # edit the itinerary vehicle (foot, bicycle, motor vehicle)
+    if 'itinerary' in request.POST and 'vehicle' in request.POST:
+        return api.editItinerary(request, itinerary=request.POST['itinerary'],
+                                 vehicle=request.POST['vehicle'])
+    request.response.status = 400
+    return { 'error': 'Missing parameter' }
+
 @view_config(route_name='ajaxDeleteDestination', renderer='json')
 def ajaxFormDeleteDestination(request):
     # delete a destination in an itinerary

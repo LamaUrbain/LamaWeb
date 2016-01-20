@@ -150,6 +150,31 @@ $(document).ready(function() {
 	    }
 	});
 
+	$('a[href=#editVehicle]').click(function(e) {
+	    e.preventDefault();
+	    var selected_vehicle = $('select[name=vehicle]').val();
+	    if (selected_vehicle != parseInt(itinerary.vehicle)) {
+		$.ajax({
+		    type: 'POST',
+		    url: '/ajax/form/editvehicle',
+		    data: {
+			'itinerary': itinerary.id,
+			'vehicle': selected_vehicle,
+		    },
+		    success: function(new_itinerary) {
+			itinerary = new_itinerary;
+			$('select[name=vehicle]').val(itinerary.vehicle);
+			$('.cuteform-selected').removeClass('cuteform-selected');
+			$('[data-cuteform-val=' + itinerary.vehicle + ']').addClass('cuteform-selected');
+			reloadMapIcons();
+		    },
+		    error: genericAjaxError,
+		    dataType: 'json',
+		});
+	    }
+	    return false;
+	});
+
 	$('a[href=#addDestination]').click(function(e) {
 	    e.preventDefault();
 	    var lastIndex = $('#destinations').find('.destination').last().find('input').attr('data-index');

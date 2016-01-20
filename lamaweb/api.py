@@ -94,8 +94,8 @@ def getItinerary(request, id):
 def createItinerary(request, departure, destination=None):
     return ApiRequest().post('/itineraries/', data=prepareParams(request, {'departure': departure, 'destination': destination}, token=True)).json()
 
-def editItinerary(request, itinerary, departure=None, name=None, favorite=None):
-    return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite}, token=True)).json()
+def editItinerary(request, itinerary, departure=None, name=None, favorite=None, vehicle=None):
+    return ApiRequest().put('/itineraries/' + itinerary, params=prepareParams(request, {'name': name, 'departure': departure, 'favorite': favorite, 'vehicle': vehicle}, token=True)).json()
 
 def addDestination(request, itinerary, destination):
     return ApiRequest().post('/itineraries/' + itinerary + '/destinations', data=prepareParams(request, {'destination': destination}, token=True)).json()

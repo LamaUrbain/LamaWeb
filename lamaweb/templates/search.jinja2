@@ -1,6 +1,7 @@
 {% extends 'base.jinja2' %}
 {% block js %}
 <script src="/static/js/search.js"></script>
+<script src="/static/bower/CuteForm/CuteForm.min.js"></script>
 {% endblock %}
 {% block jsvariables %}
 <script>
@@ -69,7 +70,14 @@
     {% endif %}
   </div>
   <form id="more" class="collapse text-right" method="post">
-    <br>
+    <select name="vehicle" data-cuteform="true">
+      <option value="0" data-cuteform-html="<i class='flaticon-walk'></i> Foot"{% if itinerary.vehicle == 0 %} selected{% endif %}>Foot</option>
+      <option value="1" data-cuteform-html="<i class='flaticon-bicycle'></i> Bicycle">{% if itinerary.vehicle == 1 %} selected{% endif %}Bicycle</option>
+      <option value="2" data-cuteform-html="<i class='flaticon-bus'></i> Motor vehicle">{% if itinerary.vehicle == 2 %} selected{% endif %}Motor vehicle</option>
+    </select>
+    <a class="btn btn-main edit-vehicle" href="#editVehicle">
+      <i class="flaticon-cursor"></i>
+    </a>
     {% if itinerary %}
     {% if itinerary.favorite %}
     <div class="row">
